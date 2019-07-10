@@ -5,11 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -18,9 +16,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.kommunicate.KmChatBuilder;
 import io.kommunicate.Kommunicate;
@@ -70,6 +68,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
     public void registerPushNotification(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
@@ -90,6 +89,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
     public void updatePushToken(String token, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
@@ -115,7 +115,8 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
     }
 
-    public void buildConversation(final ReadableMap readableMap, final Callback callback) {
+    @ReactMethod
+    public void buildConversation(final ReadableMap jsonObject, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity doesn't exist");
@@ -123,46 +124,50 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            KmChatBuilder chatBuilder = (KmChatBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(readableMap.toHashMap(), HashMap.class), KmChatBuilder.class);
-            /*final JSONObject jsonObject = new JSONObject(data.getString(0));
+            KmChatBuilder chatBuilder = new KmChatBuilder(currentActivity);
+            //chatBuilder = (KmChatBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(readableMap.toHashMap(), HashMap.class), KmChatBuilder.class);
 
-            if (jsonObject.has("appId")) {
-                chatBuilder.setApplicationId(jsonObject.getString("appId"));
+            if (jsonObject.hasKey("applicationId")) {
+                chatBuilder.setApplicationId(jsonObject.getString("applicationId"));
             }
 
-            if (jsonObject.has("withPreChat")) {
+            if (jsonObject.hasKey("withPreChat")) {
                 chatBuilder.setWithPreChat(jsonObject.getBoolean("withPreChat"));
             }
 
-            if (jsonObject.has("kmUser")) {
+            if (jsonObject.hasKey("kmUser")) {
                 chatBuilder.setKmUser((KMUser) GsonUtils.getObjectFromJson(jsonObject.getString("kmUser"), KMUser.class));
             }
 
-            if (jsonObject.has("isUnique")) {
+            if (jsonObject.hasKey("isUnique")) {
                 chatBuilder.setSingleChat(jsonObject.getBoolean("isUnique"));
             }
 
-            if (jsonObject.has("agentIds")) {
+            if (jsonObject.hasKey("agentIds")) {
                 chatBuilder.setAgentIds((List<String>) GsonUtils.getObjectFromJson(jsonObject.getString("agentIds"), List.class));
             }
 
-            if (jsonObject.has("botIds")) {
+            if (jsonObject.hasKey("botIds")) {
                 chatBuilder.setBotIds((List<String>) GsonUtils.getObjectFromJson(jsonObject.getString("botIds"), List.class));
             }
 
-            if (jsonObject.has("groupName")) {
+            if (jsonObject.hasKey("groupName")) {
                 chatBuilder.setChatName(jsonObject.getString("groupName"));
             }
 
-            if (jsonObject.has("deviceToken")) {
+            if (jsonObject.hasKey("deviceToken")) {
                 chatBuilder.setDeviceToken(jsonObject.getString("deviceToken"));
             }
 
-            if (jsonObject.has("metadata")) {
+            if (jsonObject.hasKey("metadata")) {
                 chatBuilder.setMetadata((Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString("metadata"), Map.class));
-            }*/
+            }
 
-            if (jsonObject.has("createOnly") && jsonObject.getBoolean("createOnly")) {
+            if (jsonObject.hasKey("clientConversationId")) {
+                chatBuilder.setClientConversationId(jsonObject.getString("clientConversationId"));
+            }
+
+            if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
                 chatBuilder.createChat(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
