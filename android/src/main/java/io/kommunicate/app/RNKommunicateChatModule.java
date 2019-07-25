@@ -41,6 +41,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         return "RNKommunicateChat";
     }
 
+    //creates the native android toast (for testing)
+    @ReactMethod
+    public void createToast(String message) {
+        Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
     @ReactMethod
     public void loginUser(final ReadableMap config, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
@@ -56,6 +62,31 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         Kommunicate.login(currentActivity, user, new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                callback.invoke("Error", registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void loginAsVisitor(final String applicationId, final Callback callback) {
+        final Activity activity = getCurrentActivity();
+        if(activity == null) {
+            callback.invoke("Error", "Activity not present.");
+            return;
+        }
+
+        if(applicationId != null && !TextUtils.isEmpty(applicationId)) {
+            Kommunicate.init(activity, applicationId);
+        }
+
+        Kommunicate.loginAsVisitor(activity, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                 callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
@@ -113,6 +144,27 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 e.printStackTrace();
             }
         }
+    }
+
+    @ReactMethod
+    public  void openConversation(Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke("Error", "Activity doesn't exist");
+            return;
+        }
+
+        Kommunicate.openConversation(currentActivity, new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                callback.invoke("Success", message.toString());
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                callback.invoke("Error", error.toString());
+            }
+        });
     }
 
     @ReactMethod
@@ -197,5 +249,77 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
             callback.invoke("Error", e.getMessage());
         }
+    }
+
+    @ReactMethod
+    public void launchPaticularConversation(final String conversationId, final boolean skipConversationList,final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke("Error", "Activity does not exist.");
+            return;
+        }
+        try {
+            KmConversationHelper.openConversation(currentActivity,skipConversationList,  Integer.parseInt(conversationId), new KmCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    callback.invoke("Success", message.toString());
+                }
+
+                @Override
+                public void onFailure(Object error) {
+                    callback.invoke("Error", error.toString());
+                }
+            });
+        }catch (KmException k) {
+            callback.invoke("Error", k.toString());
+        }
+
+    }
+
+    @ReactMethod
+    public void isLoggedIn(final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke("False");
+        } else {
+            if(Kommunicate.isLoggedIn(currentActivity))
+                callback.invoke("True");
+            else
+                callback.invoke("False");
+
+        }
+    }
+
+    @ReactMethod
+    public void getLoggedInUser(final Callback callback) {
+        final Activity activity = getCurrentActivity();
+        if(activity == null) {
+            callback.invoke("Error", "Activity does not exist.");
+            return;
+        }
+
+        KMUser kmUser = KMUser.getLoggedInUser(activity);
+
+        callback.invoke("Success", GsonUtils.getJsonFromObject(kmUser, KMUser.class));
+    }
+
+    @ReactMethod
+    public void logout(final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if(currentActivity == null) {
+            callback.invoke("Error");
+            return;
+        }
+        Kommunicate.logout(currentActivity, new KMLogoutHandler() {
+            @Override
+            public void onSuccess(Context context) {
+                callback.invoke("Success");
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                callback.invoke("Error");
+            }
+        });
     }
 }
