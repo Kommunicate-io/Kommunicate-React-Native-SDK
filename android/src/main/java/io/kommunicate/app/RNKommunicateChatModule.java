@@ -38,13 +38,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "RNKommunicateChat";
-    }
-
-    //creates the native android toast (for testing)
-    @ReactMethod
-    public void createToast(String message) {
-        Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
+        return "KommunicateChat";
     }
 
     @ReactMethod
@@ -176,51 +170,11 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            KmChatBuilder chatBuilder = new KmChatBuilder(currentActivity);
-            //chatBuilder = (KmChatBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(readableMap.toHashMap(), HashMap.class), KmChatBuilder.class);
-
-            if (jsonObject.hasKey("applicationId")) {
-                chatBuilder.setApplicationId(jsonObject.getString("applicationId"));
-            }
-
-            if (jsonObject.hasKey("withPreChat")) {
-                chatBuilder.setWithPreChat(jsonObject.getBoolean("withPreChat"));
-            }
-
-            if (jsonObject.hasKey("kmUser")) {
-                chatBuilder.setKmUser((KMUser) GsonUtils.getObjectFromJson(jsonObject.getString("kmUser"), KMUser.class));
-            }
-
-            if (jsonObject.hasKey("isUnique")) {
-                chatBuilder.setSingleChat(jsonObject.getBoolean("isUnique"));
-            }
-
-            if (jsonObject.hasKey("agentIds")) {
-                chatBuilder.setAgentIds((List<String>) GsonUtils.getObjectFromJson(jsonObject.getString("agentIds"), List.class));
-            }
-
-            if (jsonObject.hasKey("botIds")) {
-                chatBuilder.setBotIds((List<String>) GsonUtils.getObjectFromJson(jsonObject.getString("botIds"), List.class));
-            }
-
-            if (jsonObject.hasKey("groupName")) {
-                chatBuilder.setChatName(jsonObject.getString("groupName"));
-            }
-
-            if (jsonObject.hasKey("deviceToken")) {
-                chatBuilder.setDeviceToken(jsonObject.getString("deviceToken"));
-            }
-
-            if (jsonObject.hasKey("metadata")) {
-                chatBuilder.setMetadata((Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString("metadata"), Map.class));
-            }
-
-            if (jsonObject.hasKey("clientConversationId")) {
-                chatBuilder.setClientConversationId(jsonObject.getString("clientConversationId"));
-            }
-
+            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(readableMap.toHashMap(), HashMap.class), KmConversationBuilder.class);
+            conversationBuilder.setContext(currentActivity);
+           
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
-                chatBuilder.createChat(new KmCallback() {
+                conversationBuilder.createConversation(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         Channel channel = ChannelService.getInstance(currentActivity).getChannelByChannelKey((Integer) message);
@@ -233,7 +187,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                     }
                 });
             } else {
-                chatBuilder.launchChat(new KmCallback() {
+                conversationBuilder.llaunchConversation(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         callback.invoke("Success", message != null ? message.toString() : "Success");
@@ -252,7 +206,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void launchPaticularConversation(final String conversationId, final boolean skipConversationList,final Callback callback) {
+    public void openPaticularConversation(final String conversationId, final boolean skipConversationList,final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity does not exist.");
@@ -288,19 +242,6 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 callback.invoke("False");
 
         }
-    }
-
-    @ReactMethod
-    public void getLoggedInUser(final Callback callback) {
-        final Activity activity = getCurrentActivity();
-        if(activity == null) {
-            callback.invoke("Error", "Activity does not exist.");
-            return;
-        }
-
-        KMUser kmUser = KMUser.getLoggedInUser(activity);
-
-        callback.invoke("Success", GsonUtils.getJsonFromObject(kmUser, KMUser.class));
     }
 
     @ReactMethod
