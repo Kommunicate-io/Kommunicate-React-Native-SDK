@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.KmChatBuilder;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.KmConversationBuilder;
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
