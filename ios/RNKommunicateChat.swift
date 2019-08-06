@@ -11,8 +11,8 @@ import Kommunicate
 import Applozic
 import ApplozicSwift
 
-@objc (KommunicateChat)
-class KommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
+@objc (RNKommunicateChat)
+class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
   
   var appId : String? = nil;
   var agentIds: [String]? = [];

@@ -1,5 +1,5 @@
 //
-//  KommunicateChatBridge.m
+//  RNKommunicateChat.m
 //  KommunicateReactNativeSample
 //
 //  Created by Ashish Kanswal on 30/07/19.
@@ -7,7 +7,7 @@
 //
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(KommunicateChat, NSObject)
+@interface RCT_EXTERN_MODULE(RNKommunicateChat, NSObject)
 
 RCT_EXTERN_METHOD(isLoggedIn: (RCTResponseSenderBlock));
 

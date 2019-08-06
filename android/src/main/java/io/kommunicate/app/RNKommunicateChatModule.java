@@ -1,4 +1,3 @@
-
 package io.kommunicate.app;
 
 import android.app.Activity;
@@ -17,11 +16,12 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import io.kommunicate.KmConversationHelper;
+import io.kommunicate.KmException;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
@@ -29,16 +29,13 @@ import io.kommunicate.KmConversationBuilder;
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
-    private final ReactApplicationContext reactContext;
-
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "KommunicateChat";
+        return "RNKommunicateChat";
     }
 
     @ReactMethod
@@ -141,7 +138,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public  void openConversation(Callback callback) {
+    public  void openConversation(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity doesn't exist");
@@ -170,7 +167,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(readableMap.toHashMap(), HashMap.class), KmConversationBuilder.class);
+            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(jsonObject.toHashMap(), HashMap.class), KmConversationBuilder.class);
             conversationBuilder.setContext(currentActivity);
            
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
@@ -187,7 +184,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                     }
                 });
             } else {
-                conversationBuilder.llaunchConversation(new KmCallback() {
+                conversationBuilder.launchConversation(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         callback.invoke("Success", message != null ? message.toString() : "Success");
