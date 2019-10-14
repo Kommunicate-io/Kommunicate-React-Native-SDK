@@ -50,4 +50,29 @@
   	```
       implementation project(':react-native-kommunicate-chat')
   	```
+   
+### Launch Conversation
+In your app, create a button to launch the support chat. On click of the button create the conversation launch object and then pass it to the conversation launch object.
+
+To launch the conversation create a conversation launchObject as below:
+
+```
+var conversationObject = {
+                applicationId : '<Your-APP_ID>',    //Replace it with your APP_ID from https://dashboard.kommunicate.io/settings/install
+            };
+```
+
+Refer to this doc for more parameters: https://docs.kommunicate.io/docs/cordova-installation#launch-chat
+
+Note: In the above doc its mentioned as appId, here you need to pass applicationId. Rest all parameters are same.
+
+
+  Then call the conversationBuilder with this object:
+
+```
+  Kommunicate.buildConversation(conversationObject, (response)=> {
+               console.log("Test response : " + response);
+            }); 
+```
+
   
