@@ -128,8 +128,6 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     self.agentIds = [];
     self.botIds = [];
     self.callback = callback;
-    
-    let viewController = UIApplication.topViewController()
   
     do{
         var withPrechat : Bool = false
@@ -195,7 +193,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
               DispatchQueue.main.async {
               let controller = KMPreChatFormViewController(configuration: Kommunicate.defaultConfiguration)
               controller.delegate = self
-                viewController?.present(controller, animated: false, completion: nil)
+                UIApplication.topViewController()?.present(controller, animated: false, completion: nil)
               }
             }
           }
@@ -236,6 +234,21 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
       }else{
         callback(["Error", "Failed to launch conversation with conversationId : " + conversationId])
       }}
+  }
+  
+  @objc
+  func updateChatContext(_ chatContext: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+    do {
+      if(Kommunicate.isLoggedIn){
+        try Kommunicate.defaultConfiguration.updateChatContext(with: chatContext)
+        callback(["Success", "Updated chat context"])
+      }else{
+        callback(["Error", "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the chatContext"])
+      }
+    } catch  {
+      print(error)
+      callback(["Error", error])
+    }
   }
   
   @objc
