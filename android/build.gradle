@@ -31,6 +31,6 @@ repositories {
 
 dependencies {
     compile 'com.facebook.react:react-native:+'
-    compile 'io.kommunicate:kommunicate:1.9.0'
+    compile 'io.kommunicate:kommunicateui:1.9.2'
 }
   

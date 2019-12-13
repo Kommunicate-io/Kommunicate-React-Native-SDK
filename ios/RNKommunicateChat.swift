@@ -239,6 +239,21 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
   }
   
   @objc
+  func updateChatContext(_ chatContext: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+    do {
+      if(Kommunicate.isLoggedIn){
+        try Kommunicate.defaultConfiguration.updateChatContext(with: chatContext)
+        callback(["Success", "Updated chat context"])
+      }else{
+        callback(["Error", "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the chatContext"])
+      }
+    } catch  {
+      print(error)
+      callback(["Error", error])
+    }
+  }
+  
+  @objc
   func logout(_ callback: RCTResponseSenderBlock) -> Void {
     Kommunicate.logoutUser()
     callback(["Success"])

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -16,6 +17,7 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
@@ -68,12 +70,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void loginAsVisitor(final String applicationId, final Callback callback) {
         final Activity activity = getCurrentActivity();
-        if(activity == null) {
+        if (activity == null) {
             callback.invoke("Error", "Activity not present.");
             return;
         }
 
-        if(applicationId != null && !TextUtils.isEmpty(applicationId)) {
+        if (applicationId != null && !TextUtils.isEmpty(applicationId)) {
             Kommunicate.init(activity, applicationId);
         }
 
@@ -138,7 +140,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public  void openConversation(final Callback callback) {
+    public void openConversation(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity doesn't exist");
@@ -169,7 +171,14 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         try {
             KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(jsonObject.toHashMap(), HashMap.class), KmConversationBuilder.class);
             conversationBuilder.setContext(currentActivity);
-           
+
+            if (!jsonObject.hasKey("isSingleConversation")) {
+                conversationBuilder.setSingleConversation(true);
+            }
+            if (!jsonObject.hasKey("skipConversationList")) {
+                conversationBuilder.setSkipConversationList(true);
+            }
+
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
                 conversationBuilder.createConversation(new KmCallback() {
                     @Override
@@ -203,14 +212,14 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openPaticularConversation(final String conversationId, final boolean skipConversationList,final Callback callback) {
+    public void openPaticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity does not exist.");
             return;
         }
         try {
-            KmConversationHelper.openConversation(currentActivity,skipConversationList,  Integer.parseInt(conversationId), new KmCallback() {
+            KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
                     callback.invoke("Success", message.toString());
@@ -221,7 +230,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                     callback.invoke("Error", error.toString());
                 }
             });
-        }catch (KmException k) {
+        } catch (KmException k) {
             callback.invoke("Error", k.toString());
         }
 
@@ -233,7 +242,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         if (currentActivity == null) {
             callback.invoke("False");
         } else {
-            if(Kommunicate.isLoggedIn(currentActivity))
+            if (Kommunicate.isLoggedIn(currentActivity))
                 callback.invoke("True");
             else
                 callback.invoke("False");
@@ -242,9 +251,35 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void updateChatContext(ReadableMap chatContext, Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        try {
+            if (Kommunicate.isLoggedIn(currentActivity)) {
+                Kommunicate.updateChatContext(currentActivity, getStringMap(chatContext.toHashMap()));
+                callback.invoke("Success", "Updated chat context");
+            } else {
+                callback.invoke("Error", "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the chatContext");
+            }
+        } catch (Exception e) {
+            callback.invoke("Error", e.toString());
+        }
+    }
+
+    private Map<String, String> getStringMap(HashMap<String, Object> objectMap) {
+        if (objectMap == null) {
+            return null;
+        }
+        Map<String, String> newMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : entry.getValue().toString());
+        }
+        return newMap;
+    }
+
+    @ReactMethod
     public void logout(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
-        if(currentActivity == null) {
+        if (currentActivity == null) {
             callback.invoke("Error");
             return;
         }
