@@ -128,8 +128,6 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     self.agentIds = [];
     self.botIds = [];
     self.callback = callback;
-    
-    let viewController = UIApplication.topViewController()
   
     do{
         var withPrechat : Bool = false
@@ -195,7 +193,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
               DispatchQueue.main.async {
               let controller = KMPreChatFormViewController(configuration: Kommunicate.defaultConfiguration)
               controller.delegate = self
-                viewController?.present(controller, animated: false, completion: nil)
+                UIApplication.topViewController()?.present(controller, animated: false, completion: nil)
               }
             }
           }
