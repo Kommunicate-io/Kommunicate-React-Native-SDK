@@ -1,4 +1,3 @@
-
 Pod::Spec.new do |s|
   s.name         = "RNKommunicateChat"
   s.version      = "1.0.0"
@@ -12,11 +11,10 @@ Pod::Spec.new do |s|
   s.author             = { "author" => "ashish@kommunicate.io" }
   s.platform     = :ios, "10.0"
   s.source       = { :git => "https://github.com/Kommunicate-io/Kommunicate-React-Native-SDK", :tag => "master" }
-  s.source_files  = "RNKommunicateChat/**/*.{h,m}"
+  s.source_files  = "ios/*.{h,m,swift}"
   s.requires_arc = true
-
-
-  s.dependency "React"
+  
+  s.dependency 'React'
   s.dependency 'Kommunicate', '~> 3.0.0'
 end
 

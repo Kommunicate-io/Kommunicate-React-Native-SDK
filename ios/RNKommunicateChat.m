@@ -9,9 +9,9 @@
 
 @interface RCT_EXTERN_MODULE(RNKommunicateChat, NSObject)
 
-RCT_EXTERN_METHOD(isLoggedIn: (RCTResponseSenderBlock));
+RCT_EXTERN_METHOD (isLoggedIn: (RCTResponseSenderBlock));
 
-RCT_EXTERN_METHOD(loginUser:(NSDictionary<NSString *, id> * _Nonnull)user :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (loginUser:(NSDictionary<NSString *, id> * _Nonnull)user :(RCTResponseSenderBlock _Nonnull)callback);
 
 RCT_EXTERN_METHOD (loginAsVisitor:(NSString * _Nonnull) appId :(RCTResponseSenderBlock _Nonnull) callback);
 RCT_EXTERN_METHOD (registerPushNotification: (RCTResponseSenderBlock));
@@ -22,6 +22,9 @@ RCT_EXTERN_METHOD (openParticularConversation:(NSString * _Nonnull)conversationI
 RCT_EXTERN_METHOD (logout: (RCTResponseSenderBlock));
 RCT_EXTERN_METHOD (updateChatContext: (NSDictionary<NSString *, id> * _Nonnull)chatContext :(RCTResponseSenderBlock _Nonnull)callback);
 
+
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end
+
+
 

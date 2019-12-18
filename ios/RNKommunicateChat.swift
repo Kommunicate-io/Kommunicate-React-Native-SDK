@@ -10,6 +10,7 @@ import Foundation
 import Kommunicate
 import Applozic
 import ApplozicSwift
+import React
 
 @objc (RNKommunicateChat)
 class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
