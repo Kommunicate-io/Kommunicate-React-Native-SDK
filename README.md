@@ -1,3 +1,5 @@
+## Installation
+
 This is the installation doc for the Kommunicate SDK for React Native.
 
 To add the Kommunicate module to you react native application, add it using npm:
