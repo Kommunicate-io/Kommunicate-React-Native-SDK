@@ -37,8 +37,8 @@ import RNKommunicateChat from 'react-native-kommunicate-chat';
 Sign up for [Kommunicate](https://dashboard.kommunicate.io) to get your [APP_ID](https://dashboard.kommunicate.io/settings/install). This APP_ID is used to create/launch conversations.
 
 ## Launch chat
-Kommunicate provides conversationBuilder function to create and launch chat directly saving you the extra steps of authentication, creation, initialization and launch. You can customize the process by building the conversationObject according to your requirements.
-To launch the chat you need to create a conversation object. This object is passed to the `conversationBuilder` function and based on the parameters of the object the chat is created/launched.
+Kommunicate provides buildConversation function to create and launch chat directly saving you the extra steps of authentication, creation, initialization and launch. You can customize the process by building the conversationObject according to your requirements.
+To launch the chat you need to create a conversation object. This object is passed to the `buildConversation` function and based on the parameters of the object the chat is created/launched.
 
 Below are some examples to launch chat in different scenarios:
 
@@ -47,7 +47,7 @@ If you would like to launch the chat directly without the visiting user entering
 
 ```js
 let conversationObject = {
-     'applicationId' : '<APP_ID>' // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
+     'appId' : '<APP_ID>' // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
 }
 
  RNKommunicateChat.buildConversation(conversationObject, (response, responseMessage) => {
@@ -61,7 +61,7 @@ If you need the user to fill in details like phone number, emailId and name befo
 
 ```js
 let conversationObject = {
-     'applicationId' : '<APP_ID>', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
+     'appId' : '<APP_ID>', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
      'withPreChat' : true
 }
 
@@ -82,7 +82,7 @@ let user = {
 }
 
 let conversationObject = {
-     'applicationId' : '<APP_ID>', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
+     'appId' : '<APP_ID>', // The [APP_ID](https://dashboard.kommunicate.io/settings/install) obtained from kommunicate dashboard.
      'kmUser' : JSON.stringify(user)
 }
 
