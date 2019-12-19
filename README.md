@@ -1,9 +1,3 @@
----
-id: reactnative-installation
-title: Installation
-sidebar_label: Installation
----
-
 This is the installation doc for the Kommunicate SDK for React Native.
 
 To add the Kommunicate module to you react native application, add it using npm:
@@ -18,23 +12,10 @@ Then link the module:
 react-native link react-native-kommunicate-chat
 ```
 
-For iOS you need to follow the below steps in addition to the above ones:
-1) Navigate to YourApp/ios directory from terminal and run the below command:
+For iOS, navigate to YourApp/ios directory from terminal and run the below command:
     ```
     pod install
     ```
-2) Open <YourProject>.xcworkspace in xcode
-3) Right click on YourApp/YourApp -> Add files to 'YourApp' -> node_modules/react-native-kommunicate-chat/ios/ and add the below 2 file:
-  
-    ```
-    KommunicateChatBridge.m
-    RNKommunicateChat.swift
-    ```
-  
-If your project does not contain an objective C Bridging header, then you will be asked to add a bridging header (The bridging header name would be YourApp-Bridging-Header.h), click yes to add the bridging header. Add the below imports to the file:
-  
-    #import <React/RCTBridge.h>
-    #import <React/RCTBridgeModule.h>
   
 >Note: Kommunicate requires min ios platform version 10 and uses dynamic frameworks. Make sure you have the below settings at the top of your Podfile:
  ```
@@ -44,19 +25,10 @@ If your project does not contain an objective C Bridging header, then you will b
 
 ## Import the module
 
-You can use the module by importing it in your react native files from NativeModules:
+You can use the module by importing it in your react native files as below:
 
 ```js
-import {
- //Other imports, 
-  NativeModules
-} from 'react-native';
-```
-
-Define `RNKommunicateChat` as below:
-
-```js
-var RNKommunicateChat = NativeModules.RNKommunicateChat;
+import RNKommunicateChat from 'react-native-kommunicate-chat';
 ```
 
 ## Get your Application Id
