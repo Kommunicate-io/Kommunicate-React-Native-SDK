@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   
   s.dependency 'React'
-  s.dependency 'Kommunicate', '~> 3.0.0'
+  s.dependency 'Kommunicate', '~> 5.5.1'
 end
 
   
