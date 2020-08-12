@@ -248,22 +248,6 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                                             self.callback!(["Error", error.localizedDescription])
                                         }
         })
-        
-        Kommunicate.createConversation(userId: ALUserDefaultsHandler.getUserId(),
-                                       agentIds: self.agentIds ?? [],
-                                       botIds: self.botIds,
-                                       useLastConversation: self.isSingleConversation,
-                                       completion: { response in
-                                        guard !response.isEmpty else{
-                                            self.callback!(["Error", "Unable to create conversation"])
-                                            return
-                                        }
-                                        if self.createOnly{
-                                            self.callback!(["Success", response])
-                                        }else{
-                                            self.openParticularConversation(response, true, self.callback!)
-                                        }
-        })
     }
     
     @objc
