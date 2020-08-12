@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -212,7 +211,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openPaticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
+    public void openParticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             callback.invoke("Error", "Activity does not exist.");
