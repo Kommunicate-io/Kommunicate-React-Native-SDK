@@ -12,11 +12,11 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -31,6 +31,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'io.kommunicate.sdk:kommunicateui:2.0.4.1'
+    api 'io.kommunicate.sdk:kommunicateui:2.1.0'
 }
-  

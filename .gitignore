@@ -1,0 +1,5 @@
+# Android/IntelliJ
+package-lock.json
+build/
+.idea
+local.properties

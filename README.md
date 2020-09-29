@@ -18,13 +18,32 @@ For iOS, navigate to YourApp/ios directory from terminal and run the below comma
     ```
     pod install
     ```
-  
+
 >Note: Kommunicate requires min ios platform version 10 and uses dynamic frameworks. Make sure you have the below settings at the top of your Podfile:
  ```
  platform :ios, '10.0'
  use_frameworks!
  ```
 
+Add permissions for Camera, Photo Library, Microphone, Contacts and Location usage. </br>
+
+Note: We won't be asking the users for these permissions unless they use the respective feature. Due to Apple's requirement, we have to add these permissions if we are using any of their APIs related to Camera, Microphone etc.
+
+Open `Info.plist` from `/ios/YOUR_PROJECT_NAME/Info.plist` file and paste these permissions anywhere inside the `<dict>` tag.
+```
+<key>NSCameraUsageDescription</key>
+<string>Allow Camera</string>
+<key>NSContactsUsageDescription</key>
+<string>Allow Contacts</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Allow location sharing!!</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Allow MicroPhone</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Allow Photos</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Allow write access</string>
+```
 ## Import the module
 
 You can use the module by importing it in your react native files as below:
@@ -108,7 +127,7 @@ Below are all the parameters you can use to customize the conversation according
 | agentIds | List<String>      |    Optional, Pass the list of agents you want to add in this conversation. The agent ID is the email ID with which your agent is registered on Kommunicate. You may use this to add agents to the conversation while creating the conversation. Note that, conversation assignment will be done on the basis of the routing rules set in the [Conversation Rules section](https://dashboard.kommunicate.io/settings/conversation-rules). Adding agent ID here will only add the agents to the conversation and will not alter the routing rules.|
 | botIds | List<String>      |    Optional, Pass the list of bots you want to add in this conversation. Go to [bots](https://dashboard.kommunicate.io/bot) -> Manage Bots -> Copy botID . Ignore if you haven't integrated any bots. You may use this to add any number of bots to the conversation while creating the conversation. Note that this has no effect on the conversation assignee, as the [Conversation Rules](https://dashboard.kommunicate.io/settings/conversation-rules) set forth in the Dashboard will prevail.|
 | createOnly      | boolean      |   Optional. Pass true if you need to create the conversation and not launch it. In this case you will receive the clientChannelKey of the created conversation in the success callback function.|
-   
-   
+
+
 For more detailed documentation, follow this: https://docs.kommunicate.io/docs/reactnative-installation
 Here is the sample app which implements this SDK: https://github.com/Kommunicate-io/Kommunicate-React-Native-Sample
