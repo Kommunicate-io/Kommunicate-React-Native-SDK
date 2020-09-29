@@ -13,9 +13,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/Kommunicate-io/Kommunicate-React-Native-SDK", :tag => "master" }
   s.source_files  = "ios/*.{h,m,swift}"
   s.requires_arc = true
-  
-  s.dependency 'React'
-  s.dependency 'Kommunicate', '~> 5.5.1'
-end
 
-  
+  s.dependency 'React'
+  s.dependency 'Kommunicate', '~> 5.7.0'
+end
