@@ -5,8 +5,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.listners.AlCallback;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -30,6 +32,10 @@ import io.kommunicate.KmConversationBuilder;
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
+    private static final String SUCCESS = "Success";
+    private static final String ERROR = "Error";
+
+
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -43,7 +49,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void loginUser(final ReadableMap config, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Activity doesn't exist", null);
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
@@ -56,12 +62,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         Kommunicate.login(currentActivity, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
             }
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                callback.invoke("Error", registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
+                callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
             }
         });
     }
@@ -70,7 +76,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void loginAsVisitor(final String applicationId, final Callback callback) {
         final Activity activity = getCurrentActivity();
         if (activity == null) {
-            callback.invoke("Error", "Activity not present.");
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
@@ -81,12 +87,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         Kommunicate.loginAsVisitor(activity, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
             }
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                callback.invoke("Error", registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
+                callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
             }
         });
     }
@@ -95,28 +101,54 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void registerPushNotification(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Activity doesn't exist", null);
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
         Kommunicate.registerForPushNotification(currentActivity, new KmPushNotificationHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse) {
-                callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
             }
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                callback.invoke("Error", registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
+                callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
             }
         });
+    }
+
+    @ReactMethod
+    public void updateUserDetails(final ReadableMap config, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke(ERROR, "Activity doesn't exist");
+            return;
+        }
+
+        if (KMUser.isLoggedIn(currentActivity)) {
+            KMUser user = (KMUser) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(config.toHashMap(), HashMap.class), KMUser.class);
+            new AlUserUpdateTask(currentActivity, user, new AlCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    callback.invoke(SUCCESS, "User details updated");
+                }
+
+                @Override
+                public void onError(Object error) {
+                    callback.invoke(ERROR, "Unable to update user details");
+                }
+            }).execute();
+        } else {
+            callback.invoke(ERROR, "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the user details");
+        }
     }
 
     @ReactMethod
     public void updatePushToken(String token, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Activity doesn't exist", null);
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
         if (MobiComUserPreference.getInstance(currentActivity).isRegistered()) {
@@ -124,12 +156,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 Kommunicate.registerForPushNotification(currentActivity, token, new KmPushNotificationHandler() {
                     @Override
                     public void onSuccess(RegistrationResponse registrationResponse) {
-                        callback.invoke("Success", GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
                     }
 
                     @Override
                     public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                        callback.invoke("Error", registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
+                        callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
                     }
                 });
             } catch (Exception e) {
@@ -142,19 +174,19 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void openConversation(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Error", "Activity doesn't exist");
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
         Kommunicate.openConversation(currentActivity, new KmCallback() {
             @Override
             public void onSuccess(Object message) {
-                callback.invoke("Success", message.toString());
+                callback.invoke(SUCCESS, message.toString());
             }
 
             @Override
             public void onFailure(Object error) {
-                callback.invoke("Error", error.toString());
+                callback.invoke(ERROR, error.toString());
             }
         });
     }
@@ -163,7 +195,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void buildConversation(final ReadableMap jsonObject, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Error", "Activity doesn't exist");
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
@@ -183,30 +215,30 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                     @Override
                     public void onSuccess(Object message) {
                         Channel channel = ChannelService.getInstance(currentActivity).getChannelByChannelKey((Integer) message);
-                        callback.invoke("Success", channel != null && !TextUtils.isEmpty(channel.getClientGroupId()) ? channel.getClientGroupId() : (String) message);
+                        callback.invoke(SUCCESS, channel != null && !TextUtils.isEmpty(channel.getClientGroupId()) ? channel.getClientGroupId() : (String) message);
                     }
 
                     @Override
                     public void onFailure(Object error) {
-                        callback.invoke("Error", error != null ? error.toString() : "Unknown error occurred");
+                        callback.invoke(ERROR, error != null ? error.toString() : "Unknown error occurred");
                     }
                 });
             } else {
                 conversationBuilder.launchConversation(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
-                        callback.invoke("Success", message != null ? message.toString() : "Success");
+                        callback.invoke(SUCCESS, message != null ? message.toString() : "Success");
                     }
 
                     @Override
                     public void onFailure(Object error) {
-                        callback.invoke("Error", error != null ? error.toString() : "Unknown error occurred");
+                        callback.invoke(ERROR, error != null ? error.toString() : "Unknown error occurred");
                     }
                 });
             }
         } catch (Exception e) {
             e.printStackTrace();
-            callback.invoke("Error", e.getMessage());
+            callback.invoke(ERROR, e.getMessage());
         }
     }
 
@@ -214,23 +246,23 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void openParticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Error", "Activity does not exist.");
+            callback.invoke(ERROR, "Activity does not exist.");
             return;
         }
         try {
             KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
-                    callback.invoke("Success", message.toString());
+                    callback.invoke(SUCCESS, message.toString());
                 }
 
                 @Override
                 public void onFailure(Object error) {
-                    callback.invoke("Error", error.toString());
+                    callback.invoke(ERROR, error.toString());
                 }
             });
         } catch (KmException k) {
-            callback.invoke("Error", k.toString());
+            callback.invoke(ERROR, k.toString());
         }
 
     }
@@ -255,12 +287,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         try {
             if (Kommunicate.isLoggedIn(currentActivity)) {
                 Kommunicate.updateChatContext(currentActivity, getStringMap(chatContext.toHashMap()));
-                callback.invoke("Success", "Updated chat context");
+                callback.invoke(SUCCESS, "Updated chat context");
             } else {
-                callback.invoke("Error", "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the chatContext");
+                callback.invoke(ERROR, "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the chatContext");
             }
         } catch (Exception e) {
-            callback.invoke("Error", e.toString());
+            callback.invoke(ERROR, e.toString());
         }
     }
 
@@ -279,18 +311,18 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void logout(final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Error");
+            callback.invoke(ERROR);
             return;
         }
         Kommunicate.logout(currentActivity, new KMLogoutHandler() {
             @Override
             public void onSuccess(Context context) {
-                callback.invoke("Success");
+                callback.invoke(SUCCESS);
             }
 
             @Override
             public void onFailure(Exception exception) {
-                callback.invoke("Error");
+                callback.invoke(ERROR);
             }
         });
     }
