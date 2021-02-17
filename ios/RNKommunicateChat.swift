@@ -391,6 +391,30 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                 callback(["Error", reponseError.localizedDescription])
                 return
             }
+            
+            //Update the local contact
+            let alContact = ALContactDBService().loadContact(byKey: "userId", value: ALUserDefaultsHandler.getUserId())
+            if alContact == nil {
+                callback(["Error", "User not found"])
+                return
+            }
+            if email != nil {
+                alContact?.email = email
+            }
+            if phoneNumber != nil {
+                alContact?.contactNumber = phoneNumber
+            }
+            if displayName != nil {
+                alContact?.displayName = displayName
+            }
+            if imageLink != nil {
+                alContact?.contactImageUrl = imageLink
+            }
+            if metadata != nil {
+                alContact?.metadata = metadata
+            }
+            ALContactDBService().update(alContact)
+            
             callback(["Success", "User details updated"])
         })
     }
