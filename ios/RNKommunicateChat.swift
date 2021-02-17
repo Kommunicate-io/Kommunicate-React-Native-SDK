@@ -23,6 +23,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     var isSingleConversation: Bool? = true;
     var conversationAssignee: String? = nil;
     var clientConversationId: String? = nil;
+    var teamId: String? = nil;
     
     @objc
     func isLoggedIn(_ callback: RCTResponseSenderBlock) -> Void {
@@ -130,6 +131,9 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         self.createOnly = false;
         self.agentIds = [];
         self.botIds = [];
+        self.conversationAssignee = nil
+        self.clientConversationId = nil
+        self.teamId = nil
         self.callback = callback;
         
         do{
@@ -137,39 +141,31 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             var kmUser : KMUser? = nil
             
             if jsonObj["appId"] != nil {
-                appId = jsonObj["appId"] as? String
-            } else {
-                appId = nil
+                self.appId = jsonObj["appId"] as? String
             }
             
             if jsonObj["withPreChat"] != nil {
                 withPrechat = jsonObj["withPreChat"] as! Bool
-            } else {
-                withPrechat = false
             }
             
             if jsonObj["isSingleConversation"] != nil {
                 self.isSingleConversation = jsonObj["isSingleConversation"] as? Bool
-            } else {
-                self.isSingleConversation = true
             }
             
             if (jsonObj["createOnly"] != nil) {
                 self.createOnly = jsonObj["createOnly"] as! Bool
-            } else {
-                createOnly = false
             }
             
             if (jsonObj["conversationAssignee"] != nil) {
                 self.conversationAssignee = jsonObj["conversationAssignee"] as? String
-            } else {
-                self.conversationAssignee = nil
             }
             
             if (jsonObj["clientConversationId"] != nil) {
                 self.clientConversationId = jsonObj["clientConversationId"] as? String
-            } else {
-                self.clientConversationId = nil
+            }
+            
+            if (jsonObj["teamId"] != nil) {
+                self.teamId = jsonObj["teamId"] as? String
             }
             
             if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
@@ -243,6 +239,10 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             builder.withClientConversationId(clientConversationId)
         }
         
+        if let teamId = self.teamId {
+            builder.withTeamId(teamId)
+        }
+        
         Kommunicate.createConversation(conversation: builder.build(),
                                        completion: { response in
                                         switch response {
@@ -300,7 +300,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     }
     
     @objc
-    func logout(callback: @escaping RCTResponseSenderBlock) -> Void {
+    func logout(_ callback: @escaping RCTResponseSenderBlock) -> Void {
         Kommunicate.logoutUser{ (logoutResult) in
             switch logoutResult {
             case .success(_):
