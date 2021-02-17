@@ -23,6 +23,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     var isSingleConversation: Bool? = true;
     var conversationAssignee: String? = nil;
     var clientConversationId: String? = nil;
+    var teamId: String? = nil;
     
     @objc
     func isLoggedIn(_ callback: RCTResponseSenderBlock) -> Void {
@@ -130,6 +131,9 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         self.createOnly = false;
         self.agentIds = [];
         self.botIds = [];
+        self.conversationAssignee = nil
+        self.clientConversationId = nil
+        self.teamId = nil
         self.callback = callback;
         
         do{
@@ -137,39 +141,31 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             var kmUser : KMUser? = nil
             
             if jsonObj["appId"] != nil {
-                appId = jsonObj["appId"] as? String
-            } else {
-                appId = nil
+                self.appId = jsonObj["appId"] as? String
             }
             
             if jsonObj["withPreChat"] != nil {
                 withPrechat = jsonObj["withPreChat"] as! Bool
-            } else {
-                withPrechat = false
             }
             
             if jsonObj["isSingleConversation"] != nil {
                 self.isSingleConversation = jsonObj["isSingleConversation"] as? Bool
-            } else {
-                self.isSingleConversation = true
             }
             
             if (jsonObj["createOnly"] != nil) {
                 self.createOnly = jsonObj["createOnly"] as! Bool
-            } else {
-                createOnly = false
             }
             
             if (jsonObj["conversationAssignee"] != nil) {
                 self.conversationAssignee = jsonObj["conversationAssignee"] as? String
-            } else {
-                self.conversationAssignee = nil
             }
             
             if (jsonObj["clientConversationId"] != nil) {
                 self.clientConversationId = jsonObj["clientConversationId"] as? String
-            } else {
-                self.clientConversationId = nil
+            }
+            
+            if (jsonObj["teamId"] != nil) {
+                self.teamId = jsonObj["teamId"] as? String
             }
             
             if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
@@ -243,6 +239,10 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             builder.withClientConversationId(clientConversationId)
         }
         
+        if let teamId = self.teamId {
+            builder.withTeamId(teamId)
+        }
+        
         Kommunicate.createConversation(conversation: builder.build(),
                                        completion: { response in
                                         switch response {
@@ -256,7 +256,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                                         case .failure(let error):
                                             self.callback!(["Error", error.localizedDescription])
                                         }
-        })
+                                       })
     }
     
     @objc
@@ -291,9 +291,24 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     }
     
     @objc
-    func logout(_ callback: RCTResponseSenderBlock) -> Void {
-        Kommunicate.logoutUser()
-        callback(["Success"])
+    func updateUserDetails(_ kmUser: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        if(Kommunicate.isLoggedIn) {
+            self.updateUser(displayName: kmUser["displayName"] as? String, imageLink: kmUser["imageLink"] as? String, status: kmUser["status"] as? String, metadata: kmUser["metadata"] as? NSMutableDictionary, phoneNumber: kmUser["contactNumber"] as? String, email: kmUser["email"] as? String, callback: callback)
+        } else {
+            callback(["Error", "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser. Make sure you call either of the two functions before updating the user details"])
+        }
+    }
+    
+    @objc
+    func logout(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+        Kommunicate.logoutUser{ (logoutResult) in
+            switch logoutResult {
+            case .success(_):
+                callback(["Success", "Logout success"])
+            case .failure( _):
+                callback(["Error", "Error in logout"])
+            }
+        }
     }
     
     func closeButtonTapped() {
@@ -327,6 +342,80 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                 return
             }
             self.handleCreateConversation()
+        })
+    }
+    
+    func updateUser (displayName: String?, imageLink : String?, status: String?, metadata: NSMutableDictionary?,phoneNumber: String?,email : String?, callback: RCTResponseSenderBlock!) {
+        
+        let theUrlString = "\(ALUserDefaultsHandler.getBASEURL() as String)/rest/ws/user/update"
+        
+        let dictionary = NSMutableDictionary()
+        if (displayName != nil) {
+            dictionary["displayName"] = displayName
+        }
+        if imageLink != nil {
+            dictionary["imageLink"] = imageLink
+        }
+        if status != nil {
+            dictionary["statusMessage"] = status
+        }
+        if (metadata != nil) {
+            dictionary["metadata"] = metadata
+        }
+        if phoneNumber != nil {
+            dictionary["phoneNumber"] = phoneNumber
+        }
+        if email != nil {
+            dictionary["email"] = email
+        }
+        var postdata: Data? = nil
+        do {
+            postdata = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+        } catch {
+            callback(["Error", error.localizedDescription])
+            return
+        }
+        var theParamString: String? = nil
+        if let postdata = postdata {
+            theParamString = String(data: postdata, encoding: .utf8)
+        }
+        let theRequest = ALRequestHandler.createPOSTRequest(withUrlString: theUrlString, paramString: theParamString)
+        ALResponseHandler.authenticateAndProcessRequest(theRequest,andTag: "UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE", withCompletionHandler: {
+            theJson, theError in
+            guard theError == nil else {
+                callback(["Error", theError!.localizedDescription])
+                return
+            }
+            guard let apiResponse = ALAPIResponse(jsonString: theJson as? String),apiResponse.status != "error"  else {
+                let reponseError = NSError(domain: "Kommunicate", code: 1, userInfo: [NSLocalizedDescriptionKey : "ERROR IN JSON STATUS WHILE UPDATING USER STATUS"])
+                callback(["Error", reponseError.localizedDescription])
+                return
+            }
+            
+            //Update the local contact
+            let alContact = ALContactDBService().loadContact(byKey: "userId", value: ALUserDefaultsHandler.getUserId())
+            if alContact == nil {
+                callback(["Error", "User not found"])
+                return
+            }
+            if email != nil {
+                alContact?.email = email
+            }
+            if phoneNumber != nil {
+                alContact?.contactNumber = phoneNumber
+            }
+            if displayName != nil {
+                alContact?.displayName = displayName
+            }
+            if imageLink != nil {
+                alContact?.contactImageUrl = imageLink
+            }
+            if metadata != nil {
+                alContact?.metadata = metadata
+            }
+            ALContactDBService().update(alContact)
+            
+            callback(["Success", "User details updated"])
         })
     }
 }

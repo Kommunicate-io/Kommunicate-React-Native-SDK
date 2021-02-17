@@ -21,6 +21,7 @@ RCT_EXTERN_METHOD (buildConversation: (NSDictionary<NSString *, id> * _Nonnull)j
 RCT_EXTERN_METHOD (openParticularConversation:(NSString * _Nonnull)conversationId :(BOOL)skipConversationList :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (logout: (RCTResponseSenderBlock));
 RCT_EXTERN_METHOD (updateChatContext: (NSDictionary<NSString *, id> * _Nonnull)chatContext :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (updateUserDetails: (NSDictionary<NSString *, id> * _Nonnull)kmUser :(RCTResponseSenderBlock _Nonnull)callback);
 
 
 + (BOOL)requiresMainQueueSetup { return YES; }
