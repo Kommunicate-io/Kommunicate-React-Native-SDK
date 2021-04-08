@@ -227,7 +227,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 conversationBuilder.launchConversation(new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
-                        callback.invoke(SUCCESS, message != null ? message.toString() : "Success");
+                        callback.invoke(SUCCESS, message != null ? ChannelService.getInstance(currentActivity).getChannelByChannelKey((Integer) message).getClientGroupId()  : "Success");
                     }
 
                     @Override
