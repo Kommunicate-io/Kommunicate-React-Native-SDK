@@ -8,7 +8,7 @@
 
 import Foundation
 import Kommunicate
-import Applozic
+import ApplozicCore
 import ApplozicSwift
 import React
 
