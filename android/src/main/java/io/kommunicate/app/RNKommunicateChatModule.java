@@ -206,7 +206,20 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(jsonObject.toHashMap(), HashMap.class), KmConversationBuilder.class);
+            KMUser user = null;
+            Map<String, String> conversationInfo = null;
+            Map<String, Object> dataMap = jsonObject.toHashMap();
+
+            if (jsonObject.hasKey("kmUser")) {
+                user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString("kmUser"), KMUser.class);
+                dataMap.remove("kmUser");
+            }
+
+            if (jsonObject.hasKey(CONVERSATION_INFO)) {
+                conversationInfo = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(CONVERSATION_INFO), Map.class);
+                dataMap.remove(CONVERSATION_INFO);
+            }
+            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(dataMap, HashMap.class), KmConversationBuilder.class);
             conversationBuilder.setContext(currentActivity);
 
             if (!jsonObject.hasKey("isSingleConversation")) {
@@ -214,6 +227,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
             if (!jsonObject.hasKey("skipConversationList")) {
                 conversationBuilder.setSkipConversationList(true);
+            }
+            if (user != null) {
+                conversationBuilder.setKmUser(user);
+            }
+            if (conversationInfo != null) {
+                conversationBuilder.setConversationInfo(conversationInfo);
             }
 
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {

@@ -24,6 +24,9 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     var conversationAssignee: String? = nil;
     var clientConversationId: String? = nil;
     var teamId: String? = nil;
+    var conversationTitle: String? = nil;
+    var conversationInfo: [AnyHashable: Any]? = nil;
+    static let KM_CONVERSATION_METADATA: String = "conversationMetadata";
     
     @objc
     func isLoggedIn(_ callback: RCTResponseSenderBlock) -> Void {
@@ -126,7 +129,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     }
     
     @objc
-    func buildConversation(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void{
+    func buildConversation(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         self.isSingleConversation = true
         self.createOnly = false;
         self.agentIds = [];
@@ -135,8 +138,10 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         self.clientConversationId = nil
         self.teamId = nil
         self.callback = callback;
+        self.conversationInfo = nil
+        self.conversationTitle = nil
         
-        do{
+        do {
             var withPrechat : Bool = false
             var kmUser : KMUser? = nil
             
@@ -168,6 +173,14 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                 self.teamId = jsonObj["teamId"] as? String
             }
             
+            if jsonObj["conversationTitle"] != nil {
+                self.conversationTitle = jsonObj["conversationTitle"] as? String
+            }
+            
+            if jsonObj["conversationInfo"] != nil {
+                conversationInfo = [RNKommunicateChat.KM_CONVERSATION_METADATA: jsonObj["conversationInfo"] as Any]
+            }
+            
             if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
                 if let messageMetadataDict = try JSONSerialization.jsonObject(with: messageMetadataStr, options : .allowFragments) as? Dictionary<String,Any> {
                     Kommunicate.defaultConfiguration.messageMetadata = messageMetadataDict
@@ -186,7 +199,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
                 
                 if !withPrechat {
                     if jsonObj["kmUser"] != nil{
-                        var jsonSt = jsonObj["kmUser"] as! String
+                            var jsonSt = jsonObj["kmUser"] as! String
                         jsonSt = jsonSt.replacingOccurrences(of: "\\\"", with: "\"")
                         jsonSt = "\(jsonSt)"
                         kmUser = KMUser(jsonString: jsonSt)
@@ -243,6 +256,14 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             builder.withTeamId(teamId)
         }
         
+        if let conversationTitle = self.conversationTitle {
+            builder.withConversationTitle(conversationTitle)
+        }
+        
+        if let conversationInfo = self.conversationInfo {
+            builder.withMetaData(conversationInfo)
+        }
+        
         Kommunicate.createConversation(conversation: builder.build(),
                                        completion: { response in
                                         switch response {
@@ -265,8 +286,8 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             if let top = UIApplication.topViewController(){
                 Kommunicate.showConversationWith(groupId: conversationId, from: top, completionHandler: ({ (shown) in
                     if(shown){
-                        callback(["Success", "Sucessfully launched conversation with conversationId : " + conversationId])
-                    }else{
+                        callback(["Success", conversationId])
+                    } else {
                         callback(["Error", "Failed to launch conversation with conversationId : " + conversationId])
                     }
                 }))
@@ -311,6 +332,21 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         }
     }
     
+    @objc
+    func updateConversationAssignee(_ assigneeData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        callback(["Error", "Method not implemented"])
+    }
+    
+    @objc
+    func updateTeamId(_ teamData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        callback(["Error", "Method not implemented"])
+    }
+    
+    @objc
+    func updateConversationInfo(_ infoData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        callback(["Error", "Method not implemented"])
+    }
+    
     func closeButtonTapped() {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)
     }
@@ -325,10 +361,10 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         
         kmUser.applicationId = applicationKey
         
-        if(!email.isEmpty){
+        if (!email.isEmpty) {
             kmUser.userId = email
             kmUser.email = email
-        }else if(!phoneNumber.isEmpty){
+        } else if(!phoneNumber.isEmpty) {
             kmUser.contactNumber = phoneNumber
         }
         
