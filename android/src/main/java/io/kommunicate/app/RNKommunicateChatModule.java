@@ -9,6 +9,7 @@ import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.listners.AlCallback;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
+import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -34,7 +36,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
     private static final String SUCCESS = "Success";
     private static final String ERROR = "Error";
-
+    private static final String CONVERSATION_ID = "conversationId";
+    private static final String CLIENT_CONVERSATION_ID = "clientConversationId";
+    private static final String CONVERSATION_ASSIGNEE = "conversationAssignee";
+    private static final String TEAM_ID = "teamId";
+    private static final String CONVERSATION_INFO = "conversationInfo";
+    private static final String KM_USER = "kmUser";
 
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -200,7 +207,20 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(jsonObject.toHashMap(), HashMap.class), KmConversationBuilder.class);
+            KMUser user = null;
+            Map<String, String> conversationInfo = null;
+            Map<String, Object> dataMap = jsonObject.toHashMap();
+
+            if (jsonObject.hasKey(KM_USER)) {
+                user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString(KM_USER), KMUser.class);
+                dataMap.remove(KM_USER);
+            }
+
+            if (jsonObject.hasKey(CONVERSATION_INFO)) {
+                conversationInfo = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(CONVERSATION_INFO), Map.class);
+                dataMap.remove(CONVERSATION_INFO);
+            }
+            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(dataMap, HashMap.class), KmConversationBuilder.class);
             conversationBuilder.setContext(currentActivity);
 
             if (!jsonObject.hasKey("isSingleConversation")) {
@@ -208,6 +228,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
             if (!jsonObject.hasKey("skipConversationList")) {
                 conversationBuilder.setSkipConversationList(true);
+            }
+            if (user != null) {
+                conversationBuilder.setKmUser(user);
+            }
+            if (conversationInfo != null) {
+                conversationBuilder.setConversationInfo(conversationInfo);
             }
 
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
@@ -325,5 +351,138 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 callback.invoke(ERROR);
             }
         });
+    }
+
+    @ReactMethod
+    public void updateConversationAssignee(ReadableMap assigneeObject, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        try {
+            if (Kommunicate.isLoggedIn(currentActivity)) {
+                KmInfoProcessor infoProcessor = new KmInfoProcessor(assigneeObject, callback);
+                KmSettings.updateConversationAssignee(currentActivity, infoProcessor.getConversationId(), infoProcessor.getClientConversationId(), infoProcessor.getConversationAssignee(), new KmCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        callback.invoke(SUCCESS, o);
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+                        callback.invoke(ERROR, o);
+                    }
+                });
+            } else {
+                callback.invoke(ERROR, "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser.");
+            }
+        } catch (Exception e) {
+            callback.invoke(ERROR, e.toString());
+        }
+    }
+
+    @ReactMethod
+    public void updateTeamId(final ReadableMap teamObject, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        try {
+            if (Kommunicate.isLoggedIn(currentActivity)) {
+                final KmInfoProcessor infoProcessor = new KmInfoProcessor(teamObject, callback);
+                KmSettings.updateTeamId(currentActivity, infoProcessor.getConversationId(), infoProcessor.getClientConversationId(), infoProcessor.getTeamId(), new KmCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        if (!(o instanceof Channel)) {
+                            callback.invoke(SUCCESS, o);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+                        callback.invoke(ERROR, o);
+                    }
+                });
+            } else {
+                callback.invoke(ERROR, "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser.");
+            }
+        } catch (Exception e) {
+            callback.invoke(ERROR, e.toString());
+        }
+    }
+
+    @ReactMethod
+    public void updateConversationInfo(ReadableMap conversationInfoObject, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        try {
+            if (Kommunicate.isLoggedIn(currentActivity)) {
+                final KmInfoProcessor infoProcessor = new KmInfoProcessor(conversationInfoObject, callback);
+                if (infoProcessor.getConversationInfo() == null) {
+                    callback.invoke(ERROR, "conversationInfo cannot be null");
+                    return;
+                }
+                KmSettings.updateConversationInfo(currentActivity, infoProcessor.getConversationId(), infoProcessor.getClientConversationId(), getStringMap(infoProcessor.getConversationInfo().toHashMap()), new KmCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        if (!(o instanceof Channel)) {
+                            callback.invoke(SUCCESS, o);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+                        callback.invoke(ERROR, o);
+                    }
+                });
+            } else {
+                callback.invoke(ERROR, "User not authorised. This usually happens when calling the function before conversationBuilder or loginUser.");
+            }
+        } catch (Exception e) {
+            callback.invoke(ERROR, e.toString());
+        }
+    }
+
+    static class KmInfoProcessor {
+        private String clientConversationId;
+        private Integer conversationId;
+        private ReadableMap conversationInfo;
+        private String teamId;
+        private String conversationAssignee;
+
+        public KmInfoProcessor(ReadableMap map, Callback callback) {
+            if (map.hasKey(CLIENT_CONVERSATION_ID)) {
+                clientConversationId = map.getString(CLIENT_CONVERSATION_ID);
+            }
+            if (map.hasKey(CONVERSATION_ID)) {
+                conversationId = map.getInt(CONVERSATION_ID);
+            }
+            if (clientConversationId == null && conversationId == null) {
+                callback.invoke(ERROR, "Either conversationId or clientConversationId is required");
+                return;
+            }
+            if (map.hasKey(CONVERSATION_ASSIGNEE)) {
+                conversationAssignee = map.getString(CONVERSATION_ASSIGNEE);
+            }
+            if (map.hasKey(TEAM_ID)) {
+                teamId = map.getString(TEAM_ID);
+            }
+            if (map.hasKey(CONVERSATION_INFO)) {
+                conversationInfo = map.getMap(CONVERSATION_INFO);
+            }
+        }
+
+        public String getClientConversationId() {
+            return clientConversationId;
+        }
+
+        public Integer getConversationId() {
+            return conversationId;
+        }
+
+        public ReadableMap getConversationInfo() {
+            return conversationInfo;
+        }
+
+        public String getTeamId() {
+            return teamId;
+        }
+
+        public String getConversationAssignee() {
+            return conversationAssignee;
+        }
     }
 }
