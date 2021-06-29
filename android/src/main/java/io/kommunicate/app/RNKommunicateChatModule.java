@@ -41,6 +41,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     private static final String CONVERSATION_ASSIGNEE = "conversationAssignee";
     private static final String TEAM_ID = "teamId";
     private static final String CONVERSATION_INFO = "conversationInfo";
+    private static final String KM_USER = "kmUser";
 
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -210,9 +211,9 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             Map<String, String> conversationInfo = null;
             Map<String, Object> dataMap = jsonObject.toHashMap();
 
-            if (jsonObject.hasKey("kmUser")) {
-                user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString("kmUser"), KMUser.class);
-                dataMap.remove("kmUser");
+            if (jsonObject.hasKey(KM_USER)) {
+                user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString(KM_USER), KMUser.class);
+                dataMap.remove(KM_USER);
             }
 
             if (jsonObject.hasKey(CONVERSATION_INFO)) {
