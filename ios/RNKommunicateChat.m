@@ -22,6 +22,9 @@ RCT_EXTERN_METHOD (openParticularConversation:(NSString * _Nonnull)conversationI
 RCT_EXTERN_METHOD (logout: (RCTResponseSenderBlock));
 RCT_EXTERN_METHOD (updateChatContext: (NSDictionary<NSString *, id> * _Nonnull)chatContext :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (updateUserDetails: (NSDictionary<NSString *, id> * _Nonnull)kmUser :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (updateConversationAssignee: (NSDictionary<NSString *, id> * _Nonnull)assigneeData :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (updateTeamId: (NSDictionary<NSString *, id> * _Nonnull)teamData :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (updateConversationInfo: (NSDictionary<NSString *, id> * _Nonnull)infoData :(RCTResponseSenderBlock _Nonnull)callback);
 
 
 + (BOOL)requiresMainQueueSetup { return YES; }
