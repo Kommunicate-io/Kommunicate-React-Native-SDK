@@ -79,6 +79,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         if(user["metadata"] != nil){
             kmUser.metadata = user["metadata"] as? NSMutableDictionary
         }
+        Kommunicate.setup(applicationId: kmUser.applicationId)
         Kommunicate.registerUser(kmUser, completion: {
             response, error in
             guard error == nil else{
