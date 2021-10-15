@@ -352,7 +352,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)
     }
     
-    func userSubmittedResponse(name: String, email: String, phoneNumber: String) {
+    func userSubmittedResponse(name: String, email: String, phoneNumber: String, password: String) {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)
         
         let kmUser = KMUser.init()
@@ -417,7 +417,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             theParamString = String(data: postdata, encoding: .utf8)
         }
         let theRequest = ALRequestHandler.createPOSTRequest(withUrlString: theUrlString, paramString: theParamString)
-        ALResponseHandler.authenticateAndProcessRequest(theRequest,andTag: "UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE", withCompletionHandler: {
+        ALResponseHandler().authenticateAndProcessRequest(theRequest,andTag: "UPDATE_DISPLAY_NAME_AND_PROFILE_IMAGE", withCompletionHandler: {
             theJson, theError in
             guard theError == nil else {
                 callback(["Error", theError!.localizedDescription])
@@ -450,7 +450,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             if metadata != nil {
                 alContact?.metadata = metadata
             }
-            ALContactDBService().update(alContact)
+            ALContactDBService().updateContact(inDatabase: alContact)
             
             callback(["Success", "User details updated"])
         })

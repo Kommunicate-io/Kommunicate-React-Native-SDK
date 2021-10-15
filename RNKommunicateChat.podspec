@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.license      = "BSD-3"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
   s.author             = { "author" => "ashish@kommunicate.io" }
-  s.platform     = :ios, "10.0"
+  s.platform     = :ios, "12.0"
   s.source       = { :git => "https://github.com/Kommunicate-io/Kommunicate-React-Native-SDK", :tag => "master" }
   s.source_files  = "ios/*.{h,m,swift}"
   s.requires_arc = true
