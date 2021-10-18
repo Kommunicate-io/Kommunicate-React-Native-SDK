@@ -21,7 +21,7 @@ For iOS, navigate to YourApp/ios directory from terminal and run the below comma
 
 >Note: Kommunicate requires min ios platform version 10 and uses dynamic frameworks. Make sure you have the below settings at the top of your Podfile:
  ```
- platform :ios, '10.0'
+ platform :ios, '12.0'
  use_frameworks!
  ```
 
