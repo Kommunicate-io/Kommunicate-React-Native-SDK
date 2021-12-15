@@ -351,14 +351,14 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
         if Int(groupID) != nil {
             ALChannelService().updateChannelMetaData(NSNumber(value: Int(groupID)!), orClientChannelKey: nil , metadata: metadata) { error in
                 guard error == nil else {
-                    callback(["Error", "Group not found"])
+                    callback(["false", error.debugDescription])
                     return
                 }
             }
         }
         ALChannelService().updateChannelMetaData(nil, orClientChannelKey: groupID , metadata: metadata) { error in
             guard error == nil else {
-                callback(["Error", "Group not found"])
+                callback(["false", error.debugDescription])
                 return
             }
         }
