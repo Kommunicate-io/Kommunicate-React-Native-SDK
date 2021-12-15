@@ -340,7 +340,28 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     
     @objc
     func updateTeamId(_ teamData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
-        callback(["Error", "Method not implemented"])
+        let metadata = NSMutableDictionary(
+            dictionary: ALChannelService().metadataToHideActionMessagesAndTurnOffNotifications())
+        
+        guard let teamID = teamData["teamId"] as? String, let groupID = teamData["clientConversationId"] as? String else { return }
+        
+        if !teamID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            metadata.setValue(teamID, forKey: "KM_TEAM_ID")
+        }
+        if Int(groupID) != nil {
+            ALChannelService().updateChannelMetaData(NSNumber(value: Int(groupID)!), orClientChannelKey: nil , metadata: metadata) { error in
+                guard error == nil else {
+                    callback(["Error", "Group not found"])
+                    return
+                }
+            }
+        }
+        ALChannelService().updateChannelMetaData(nil, orClientChannelKey: groupID , metadata: metadata) { error in
+            guard error == nil else {
+                callback(["Error", "Group not found"])
+                return
+            }
+        }
     }
     
     @objc
