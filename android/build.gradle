@@ -13,17 +13,14 @@ rootProject.allprojects {
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
-        maven {
-            url "https://google.bintray.com/flexbox-layout"
-        }
     }
 }
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
     }
