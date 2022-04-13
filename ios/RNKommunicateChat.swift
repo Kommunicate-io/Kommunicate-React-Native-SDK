@@ -8,8 +8,8 @@
 
 import Foundation
 import Kommunicate
-import ApplozicCore
-import ApplozicSwift
+import KommunicateChatUI_iOS_SDK
+import KommunicateCore_iOS_SDK
 import React
 
 @objc (RNKommunicateChat)
