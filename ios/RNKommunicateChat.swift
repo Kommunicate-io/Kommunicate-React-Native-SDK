@@ -335,7 +335,26 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     
     @objc
     func updateConversationAssignee(_ assigneeData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
-        callback(["Error", "Method not implemented"])
+        guard let assignee = assigneeData["conversationInfo"] as? String else {
+            callback(["Error", "Conversation Assignee is empty or invalid"])
+            return
+        }
+        guard let clientConversationId = assigneeData["clientConversationId"] as? String else {
+            callback(["Error", "clientConversationId is empty or invalid"])
+            return
+        }
+        
+        let conversation = KMConversationBuilder().withClientConversationId(clientConversationId)
+            .withConversationAssignee(assignee).build()
+        
+        Kommunicate.updateConversation(conversation: conversation) { response in
+            switch response {
+            case .success(let clientConversationId):
+                callback(["Success", "Successfully updated conversation Assignee"])
+            case .failure(let error):
+                callback(["Error", "Could not update Conversation Assignee"])
+            }
+        }
     }
     
     @objc
@@ -366,7 +385,27 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     
     @objc
     func updateConversationInfo(_ infoData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
-        callback(["Error", "Method not implemented"])
+        
+        guard let conversationInfo = infoData["conversationInfo"] as? Dictionary<String, Any> else {
+            callback(["Error", "Conversation Info is empty or invalid"])
+            return
+        }
+        guard let clientConversationId = infoData["clientConversationId"] as? String else {
+            callback(["Error", "clientConversationId is empty or invalid"])
+            return
+        }
+        
+        let conversation = KMConversationBuilder().withClientConversationId(clientConversationId)
+            .withMetaData(conversationInfo).build()
+        
+        Kommunicate.updateConversation(conversation: conversation) { response in
+            switch response {
+            case .success(let clientConversationId):
+                callback(["Success", "Successfully updated conversation info"])
+            case .failure(let error):
+                callback(["Error", "Could not update Conversation Info"])
+            }
+        }
     }
     
     func closeButtonTapped() {
