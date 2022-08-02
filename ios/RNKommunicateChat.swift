@@ -335,7 +335,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
     
     @objc
     func updateConversationAssignee(_ assigneeData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
-        guard let assignee = assigneeData["conversationInfo"] as? String else {
+        guard let assignee = assigneeData["conversationAssignee"] as? String else {
             callback(["Error", "Conversation Assignee is empty or invalid"])
             return
         }
@@ -352,7 +352,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             case .success(let clientConversationId):
                 callback(["Success", "Successfully updated conversation Assignee"])
             case .failure(let error):
-                callback(["Error", "Could not update Conversation Assignee"])
+                callback(["Error", error.localizedDescription])
             }
         }
     }
@@ -403,7 +403,7 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             case .success(let clientConversationId):
                 callback(["Success", "Successfully updated conversation info"])
             case .failure(let error):
-                callback(["Error", "Could not update Conversation Info"])
+                callback(["Error", error.localizedDescription])
             }
         }
     }
