@@ -8,12 +8,12 @@ Pod::Spec.new do |s|
   s.homepage     = "https://kommunicate.io"
   s.license      = "BSD-3"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.author             = { "author" => "ashish@kommunicate.io" }
+  s.author             = { "author" => "codemonk@kommunicate.io" }
   s.platform     = :ios, "12.0"
   s.source       = { :git => "https://github.com/Kommunicate-io/Kommunicate-React-Native-SDK", :tag => "master" }
   s.source_files  = "ios/*.{h,m,swift}"
   s.requires_arc = true
 
   s.dependency 'React'
-  s.dependency 'Kommunicate', '~> 6.7.1'
+  s.dependency 'Kommunicate', '~> 6.7.2'
 end
