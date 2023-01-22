@@ -53,7 +53,7 @@ import RNKommunicateChat from 'react-native-kommunicate-chat';
 ```
 
 ## Get your Application Id
-Sign up for [Kommunicate](https://dashboard.kommunicate.io) to get your [APP_ID](https://dashboard.kommunicate.io/settings/install). This APP_ID is used to create/launch conversations.
+Sign up for [Kommunicate](https://www.kommunicate.io/?utm_source=github&utm_medium=readme&utm_campaign=react+native) to get your [APP_ID](https://dashboard.kommunicate.io/settings/install). This APP_ID is used to create/launch conversations.
 
 ## Launch chat
 Kommunicate provides buildConversation function to create and launch chat directly saving you the extra steps of authentication, creation, initialization and launch. You can customize the process by building the conversationObject according to your requirements.
