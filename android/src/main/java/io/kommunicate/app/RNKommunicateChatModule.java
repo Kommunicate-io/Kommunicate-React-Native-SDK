@@ -17,6 +17,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,14 +45,28 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     private static final String TEAM_ID = "teamId";
     private static final String CONVERSATION_INFO = "conversationInfo";
     private static final String KM_USER = "kmUser";
+    private KmEventListener kmEventListener;
+    private ReactApplicationContext reactContext;
 
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        this.reactContext = reactContext;\
     }
 
     @Override
     public String getName() {
         return "RNKommunicateChat";
+    }
+    @ReactMethod
+    public void addListener(String eventName) {
+            kmEventListener = new KmEventListener();
+            kmEventListener.register(reactContext);
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+        kmEventListener.unregister();
+
     }
 
     @ReactMethod
