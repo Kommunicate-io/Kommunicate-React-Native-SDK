@@ -50,7 +50,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
     public RNKommunicateChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;\
+        this.reactContext = reactContext;
     }
 
     @Override
