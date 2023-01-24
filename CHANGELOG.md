@@ -1,3 +1,13 @@
+## [Unreleased]
+- Added support for listening to Events - Android only
+ ```javascript
+    const eventEmitter = new NativeEventEmitter(RNKommunicateChat);
+    const eventListener = eventEmitter.addListener("onPluginLaunch", event => {
+        console.log("onPluginLaunch" );
+    });
+ ```
+ For more events, refer to our docs
+
 ## React Native Kommunicate Chat v1.6.8
 
 - Exposed methods to iOS: updateConversationAssignee and updateConversationInfo
