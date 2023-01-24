@@ -66,7 +66,6 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void removeListeners(Integer count) {
         kmEventListener.unregister();
-
     }
 
     @ReactMethod
