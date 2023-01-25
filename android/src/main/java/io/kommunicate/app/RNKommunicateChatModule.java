@@ -452,6 +452,14 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void closeConversationScreen() {
+        final Activity currentActivity = getCurrentActivity();
+        if(currentActivity != null) {
+            Kommunicate.closeConversationScreen(currentActivity);
+        }
+    }
+
     static class KmInfoProcessor {
         private String clientConversationId;
         private Integer conversationId;
