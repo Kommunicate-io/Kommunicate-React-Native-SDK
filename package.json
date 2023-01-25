@@ -1,6 +1,6 @@
 {
   "name": "react-native-kommunicate-chat",
-  "version": "1.6.8",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,9 +9,6 @@
   "keywords": [
     "react-native"
   ],
-  "author": "",
-  "license": "",
-  "peerDependencies": {
-    "react-native": "^0.63.3"
-  }
+  "author": "codemonk@kommunicate.io",
+  "license": ""
 }
