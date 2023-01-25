@@ -1,4 +1,4 @@
-## [Unreleased]
+## React Native Kommunicate Chat v2.0.0
 - Added support for listening to Events - Android only
  ```javascript
     const eventEmitter = new NativeEventEmitter(RNKommunicateChat);
@@ -7,6 +7,13 @@
     });
  ```
  For more events, refer to our docs
+ - Expose method to close Kommunicate screen - ```RNKommunicateChat.closeConversationScreen()```
+ - Typing Indicator Design Changed - Android
+ - Added Support for Android API 33
+ - Added support for AES256 encryption and decryption
+ - Added multiple customization option
+ - Multiple bug fixes and optimization
+
 
 ## React Native Kommunicate Chat v1.6.8
 

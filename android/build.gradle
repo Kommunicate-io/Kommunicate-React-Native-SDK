@@ -16,11 +16,11 @@ rootProject.allprojects {
     }
 }
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -35,5 +35,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    api 'io.kommunicate.sdk:kommunicateui:2.5.3'
+    api 'io.kommunicate.sdk:kommunicateui:2.6.0'
 }
