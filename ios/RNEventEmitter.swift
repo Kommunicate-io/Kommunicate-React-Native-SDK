@@ -10,11 +10,12 @@ import KommunicateCore_iOS_SDK
 @objc(RNEventEmitter)
 open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
     public func messageSent(message: ALMessage) {
-        
+        print("pakka101 \(message.message)")
+        RNEventEmitter.emitter.sendEvent(withName: "onPluginLaunch", body: nil)
     }
     
     public func messageReceived(message: ALMessage) {
-        
+        print("pakka101 \(message.message)")
     }
     
     public func conversationRestarted(converstionId: String) {
@@ -47,6 +48,8 @@ open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
   override init() {
     super.init()
     RNEventEmitter.emitter = self
+      Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend], callback: self)
+      print("Pakka101 entering")
   }
 
   open override func supportedEvents() -> [String] {
