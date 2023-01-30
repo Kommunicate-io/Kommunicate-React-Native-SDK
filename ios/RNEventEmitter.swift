@@ -6,6 +6,7 @@
 import Kommunicate
 import KommunicateChatUI_iOS_SDK
 import KommunicateCore_iOS_SDK
+import RCTEventEmitter
 
 @objc(RNEventEmitter)
 open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
