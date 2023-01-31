@@ -13,7 +13,7 @@ import KommunicateCore_iOS_SDK
 import React
 
 @objc (RNKommunicateChat)
-class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
+class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
     public static var emitter: RCTEventEmitter!
     
     override init() {
@@ -532,9 +532,6 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         // TODO: call unsubscribe listeners function
     }
     
-    override func supportedEvents() -> [String]! {
-        return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]
-    }
     func messageSent(message: ALMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
         RNEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: ["data":convertDictToString(dict: messageDict)])
