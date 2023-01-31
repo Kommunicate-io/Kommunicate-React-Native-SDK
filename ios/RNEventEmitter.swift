@@ -9,12 +9,53 @@ import KommunicateCore_iOS_SDK
 
 @objc(RNEventEmitter)
 open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
+    
+    public static var emitter: RCTEventEmitter!
+
+    open override class func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+    override init() {
+  //    super.init()
+        super.init(disabledObservation: ())
+        RNEventEmitter.emitter = self
+    }
+    
+    open override func supportedEvents() -> [String] {
+        ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]      // etc.
+    }
+    
+    
+   open override func addListener(_ eventName: String!) {
+       super.addListener(eventName)
+       Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
+   }
+   
+   
+   
+   open override func removeListeners(_ count: Double) {
+       super.removeListeners(count)
+       print("Pakka101 remove listener is called")
+   }
+
+    
     public func messageSent(message: ALMessage) {
         print("pakka101 \(message.message)")
         RNEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: nil)
-
     }
     
+    
+    var hasListener: Bool = false
+
+    open override func startObserving() {
+        super.startObserving()
+        hasListener = true
+    }
+
+    open override func stopObserving() {
+        super.stopObserving()
+            hasListener = false
+    }    
     public func messageReceived(message: ALMessage) {
         print("pakka101 \(message.message)")
         // let encodedData = try JSONEncoder().encode(message)
@@ -51,19 +92,5 @@ open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
         RNEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: nil)
     }
     
-
-  public static var emitter: RCTEventEmitter!
-
-  override init() {
-//    super.init()
-      super.init(disabledObservation: ())
-    RNEventEmitter.emitter = self
-      Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
-      print("Pakka101 entering")
-  }
-
-  open override func supportedEvents() -> [String] {
-      ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]      // etc.
-  }
 
 }
