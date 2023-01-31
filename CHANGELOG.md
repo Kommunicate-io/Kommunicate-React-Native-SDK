@@ -1,3 +1,12 @@
+
+## [Unreleased]
+- Added support for listening to Events - iOS
+```javascript
+    const eventEmitter = new NativeEventEmitter(RNKommunicateChat);
+    const eventListener = eventEmitter.addListener("onMessageReceived", event => {
+        console.log("onMessageReceived" );
+    });
+ ```
 ## React Native Kommunicate Chat v2.0.0
 - Added support for listening to Events - Android only
  ```javascript
