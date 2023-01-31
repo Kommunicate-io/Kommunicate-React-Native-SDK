@@ -1,5 +1,5 @@
 
-## [Unreleased]
+## React Native Kommunicate Chat v2.0.1
 - Added support for listening to Events - iOS
 ```javascript
     const eventEmitter = new NativeEventEmitter(RNKommunicateChat);
@@ -7,6 +7,7 @@
         console.log("onMessageReceived" );
     });
  ```
+ - Exposed CloseConversationScreen() to close the conversation screen
 ## React Native Kommunicate Chat v2.0.0
 - Added support for listening to Events - Android only
  ```javascript
