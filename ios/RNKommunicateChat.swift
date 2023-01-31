@@ -16,10 +16,10 @@ import React
 class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
     public static var emitter: RCTEventEmitter!
     
-    override init() {
-        super.init(disabledObservation: ())
-        RNEventEmitter.emitter = self
-    }
+    // override init() {
+    //     super.init(disabledObservation: ())
+    //     KMEventEmitter.emitter = self
+    // }
     
     var appId : String? = nil;
     var agentIds: [String]? = [];
@@ -534,39 +534,39 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate, ALKCust
     
     func messageSent(message: ALMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
-        RNEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: ["data":convertDictToString(dict: messageDict)])
+        KMEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: ["data":convertDictToString(dict: messageDict)])
     }
     
     func messageReceived(message: ALMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
-        RNEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: ["data":convertDictToString(dict: messageDict)])
+        KMEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: ["data":convertDictToString(dict: messageDict)])
     }
     
     func conversationRestarted(converstionId: String) {
-        RNEventEmitter.emitter.sendEvent(withName: "onConversationRestarted", body: ["data":converstionId])
+        KMEventEmitter.emitter.sendEvent(withName: "onConversationRestarted", body: ["data":converstionId])
 
     }
     
     func onBackButtonClick(isConversationOpened: Bool) {
-        RNEventEmitter.emitter.sendEvent(withName: "onBackButtonClicked", body: ["data":isConversationOpened])
+        KMEventEmitter.emitter.sendEvent(withName: "onBackButtonClicked", body: ["data":isConversationOpened])
     }
     
     func faqClicked(url: String) {
-        RNEventEmitter.emitter.sendEvent(withName: "onFaqClick", body: ["data":url])
+        KMEventEmitter.emitter.sendEvent(withName: "onFaqClick", body: ["data":url])
     }
     
     func conversationCreated(conversationId: String) {
-        RNEventEmitter.emitter.sendEvent(withName: "onStartNewConversation", body: ["data":conversationId])
+        KMEventEmitter.emitter.sendEvent(withName: "onStartNewConversation", body: ["data":conversationId])
     }
     
     func ratingSubmitted(conversationId: String, rating: Int, comment: String) {
         let ratingDict: NSDictionary = ["conversationId": conversationId, "rating":rating, "feedback": comment]
-        RNEventEmitter.emitter.sendEvent(withName: "onSubmitRatingClick", body: ["data": convertDictToString(dict: ratingDict)])
+        KMEventEmitter.emitter.sendEvent(withName: "onSubmitRatingClick", body: ["data": convertDictToString(dict: ratingDict)])
     }
     
     func richMessageClicked(conversationId: String, action: [String : Any], type: String) {
         let richMessageDict: NSDictionary = ["conversationId": conversationId, "action": convertDictToString(dict: action as NSDictionary), "actionType": type]
-        RNEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: ["data": convertDictToString(dict: richMessageDict)])
+        KMEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: ["data": convertDictToString(dict: richMessageDict)])
     }
     
     func convertDictToString(dict: NSDictionary) -> String {

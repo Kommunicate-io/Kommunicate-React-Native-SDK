@@ -14,7 +14,7 @@ open class KMEventEmitter: RCTEventEmitter {
     }
     override init() {
         super.init(disabledObservation: ())
-        RNEventEmitter.emitter = self
+        KMEventEmitter.emitter = self
     }
     
     override func supportedEvents() -> [String]! {
