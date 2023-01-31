@@ -579,6 +579,15 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         }
         return String(data:data, encoding:.utf8) ?? ""
     }
+
+    @objc
+    func closeConversationScreen() -> Void {
+         DispatchQueue.main.async{
+            if let top = UIApplication.topViewController(){
+                Kommunicate.closeConversationVC(from viewController:top)
+            }
+        }
+    }
     
 }
 

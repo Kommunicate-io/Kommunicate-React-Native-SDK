@@ -17,7 +17,7 @@ open class KMEventEmitter: RCTEventEmitter {
         KMEventEmitter.emitter = self
     }
     
-    override func supportedEvents() -> [String]! {
+    open override func supportedEvents() -> [String]! {
         return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]
     }
 }
