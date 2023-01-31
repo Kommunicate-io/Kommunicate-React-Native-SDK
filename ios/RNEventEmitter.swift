@@ -18,8 +18,7 @@ open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
     public func messageReceived(message: ALMessage) {
         print("pakka101 \(message.message)")
         // let encodedData = try JSONEncoder().encode(message)
-        // let jsonString = String(data: encodedData,
-                                encoding: .utf8)
+        // let jsonString = String(data: encodedData,encoding: .utf8)
         RNEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: nil)
 
     }
@@ -59,12 +58,12 @@ open class RNEventEmitter: RCTEventEmitter, ALKCustomEventCallback {
 //    super.init()
       super.init(disabledObservation: ())
     RNEventEmitter.emitter = self
-      Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.conversationBackPress, CustomEvent], callback: self)
+      Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
       print("Pakka101 entering")
   }
 
   open override func supportedEvents() -> [String] {
-      ["onMessageReceived", "onMessageSent", "onConversationRestarted", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted" ]      // etc.
+      ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]      // etc.
   }
 
 }
