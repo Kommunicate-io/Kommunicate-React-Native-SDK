@@ -13,13 +13,13 @@ import KommunicateCore_iOS_SDK
 import React
 
 @objc (RNKommunicateChat)
-class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
+class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
     public static var emitter: RCTEventEmitter!
     
-    // override init() {
-    //     super.init(disabledObservation: ())
-    //     KMEventEmitter.emitter = self
-    // }
+     override init() {
+         super.init(disabledObservation: ())
+         KMEventEmitter.emitter = self
+     }
     
     var appId : String? = nil;
     var agentIds: [String]? = [];
@@ -524,13 +524,17 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate, ALKCust
     
     // Events
     
-    override func addListener(_ eventName: String!) {
+    open override func supportedEvents() -> [String]! {
+        return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]
+    }
+    
+    open override func addListener(_ eventName: String!) {
        Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
     }
 
-    override func removeListeners(_ count: Double) {
+    open override func removeListeners(_ count: Double) {
         // TODO: call unsubscribe listeners function
-    }
+     }
     
     func messageSent(message: ALMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
@@ -592,4 +596,5 @@ extension UIApplication {
             return topViewController(controller: presented)
         }
         return controller
-    }}
+    }
+}
