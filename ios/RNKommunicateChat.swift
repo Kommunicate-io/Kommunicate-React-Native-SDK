@@ -13,7 +13,13 @@ import KommunicateCore_iOS_SDK
 import React
 
 @objc (RNKommunicateChat)
-class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
+class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
+    public static var emitter: RCTEventEmitter!
+    
+    override init() {
+        super.init(disabledObservation: ())
+        RNEventEmitter.emitter = self
+    }
     
     var appId : String? = nil;
     var agentIds: [String]? = [];
@@ -515,6 +521,64 @@ class RNKommunicateChat : NSObject, KMPreChatFormViewControllerDelegate {
             callback(["Success", "User details updated"])
         })
     }
+    
+    // Events
+    
+    override func addListener(_ eventName: String!) {
+       Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
+    }
+
+    override func removeListeners(_ count: Double) {
+        // TODO: call unsubscribe listeners function
+    }
+    
+    override func supportedEvents() -> [String]! {
+        return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted"]
+    }
+    func messageSent(message: ALMessage) {
+        guard let messageDict = message.dictionary() as? NSDictionary else { return }
+        RNEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: ["data":convertDictToString(dict: messageDict)])
+    }
+    
+    func messageReceived(message: ALMessage) {
+        guard let messageDict = message.dictionary() as? NSDictionary else { return }
+        RNEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: ["data":convertDictToString(dict: messageDict)])
+    }
+    
+    func conversationRestarted(converstionId: String) {
+        RNEventEmitter.emitter.sendEvent(withName: "onConversationRestarted", body: ["data":converstionId])
+
+    }
+    
+    func onBackButtonClick(isConversationOpened: Bool) {
+        RNEventEmitter.emitter.sendEvent(withName: "onBackButtonClicked", body: ["data":isConversationOpened])
+    }
+    
+    func faqClicked(url: String) {
+        RNEventEmitter.emitter.sendEvent(withName: "onFaqClick", body: ["data":url])
+    }
+    
+    func conversationCreated(conversationId: String) {
+        RNEventEmitter.emitter.sendEvent(withName: "onStartNewConversation", body: ["data":conversationId])
+    }
+    
+    func ratingSubmitted(conversationId: String, rating: Int, comment: String) {
+        let ratingDict: NSDictionary = ["conversationId": conversationId, "rating":rating, "feedback": comment]
+        RNEventEmitter.emitter.sendEvent(withName: "onSubmitRatingClick", body: ["data": convertDictToString(dict: ratingDict)])
+    }
+    
+    func richMessageClicked(conversationId: String, action: [String : Any], type: String) {
+        let richMessageDict: NSDictionary = ["conversationId": conversationId, "action": convertDictToString(dict: action as NSDictionary), "actionType": type]
+        RNEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: ["data": convertDictToString(dict: richMessageDict)])
+    }
+    
+    func convertDictToString(dict: NSDictionary) -> String {
+        guard let data =  try? JSONSerialization.data(withJSONObject: dict, options: []) else {
+            return ""
+        }
+        return String(data:data, encoding:.utf8) ?? ""
+    }
+    
 }
 
 extension UIApplication {
