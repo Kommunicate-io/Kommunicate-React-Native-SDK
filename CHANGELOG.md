@@ -1,3 +1,5 @@
+## React Native Kommunicate Chat v2.0.2
+- Upgraded iOS SDK to 6.7.8
 
 ## React Native Kommunicate Chat v2.0.1
 - Added support for listening to Events - iOS
