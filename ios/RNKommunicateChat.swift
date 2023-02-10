@@ -546,8 +546,8 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         KMEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: ["data":convertDictToString(dict: messageDict)])
     }
     
-    func conversationRestarted(converstionId: String) {
-        KMEventEmitter.emitter.sendEvent(withName: "onConversationRestarted", body: ["data":converstionId])
+    func conversationRestarted(conversationId: String) {
+        KMEventEmitter.emitter.sendEvent(withName: "onConversationRestarted", body: ["data":conversationId])
 
     }
     
