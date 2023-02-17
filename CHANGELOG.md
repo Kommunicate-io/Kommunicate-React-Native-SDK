@@ -1,4 +1,10 @@
 ## React Native Kommunicate Chat v2.0.2
+- Exposed createSettings() methods which will create settings for both Android and iOS
+- Exposed enableSpeechToText() method which will create UI for multiple speech to text language - Android
+- Added option to rate conversation anytime from the conversation menu
+- Added multiple customizations
+
+## React Native Kommunicate Chat v2.0.2a
 - Upgraded iOS SDK to 6.7.8
 
 ## React Native Kommunicate Chat v2.0.1
