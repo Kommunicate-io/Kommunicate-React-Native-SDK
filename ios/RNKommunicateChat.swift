@@ -413,6 +413,11 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             }
         }
     }
+
+    @objc
+    func createSettings(_ settingString: String) {
+         Kommunicate.createSettings(settings: settingString)
+    }
     
     func closeButtonTapped() {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)

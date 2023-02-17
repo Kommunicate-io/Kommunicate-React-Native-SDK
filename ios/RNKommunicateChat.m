@@ -28,6 +28,7 @@ RCT_EXTERN_METHOD (updateConversationAssignee: (NSDictionary<NSString *, id> * _
 RCT_EXTERN_METHOD (updateTeamId: (NSDictionary<NSString *, id> * _Nonnull)teamData :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (updateConversationInfo: (NSDictionary<NSString *, id> * _Nonnull)infoData :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (closeConversationScreen: );
+RCT_EXTERN_METHOD (createSettings: );
 
 
 + (BOOL)requiresMainQueueSetup { return YES; }
