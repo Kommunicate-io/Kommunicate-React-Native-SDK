@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
+import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,9 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.KmConversationBuilder;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -44,6 +48,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     private static final String CONVERSATION_ASSIGNEE = "conversationAssignee";
     private static final String TEAM_ID = "teamId";
     private static final String CONVERSATION_INFO = "conversationInfo";
+    private static final String LANGUAGES = "languages";
     private static final String KM_USER = "kmUser";
     private KmEventListener kmEventListener;
     private ReactApplicationContext reactContext;
@@ -458,6 +463,40 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         if(currentActivity != null) {
             Kommunicate.closeConversationScreen(currentActivity);
         }
+    }
+
+    @ReactMethod
+    public void enableSpeechToText(final ReadableMap speechToTextObject, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        try {
+            Map<String, String> language = null;
+
+            if (speechToTextObject.hasKey(LANGUAGES)) {
+                language = (Map<String, String>) GsonUtils.getObjectFromJson(speechToTextObject.getString(LANGUAGES), Map.class);
+                KmSpeechToTextSetting.getInstance(currentActivity)
+                .setMultipleLanguage(language);
+            }
+            if (speechToTextObject.hasKey("sendMessageOnSpeechEnd")) {
+                KmSpeechToTextSetting.getInstance(currentActivity)
+                .sendMessageOnSpeechEnd(speechToTextObject.getBoolean("sendMessageOnSpeechEnd"));
+            }
+            if (speechToTextObject.hasKey("showLanguageCode")) {
+                KmSpeechToTextSetting.getInstance(currentActivity)
+                .sendMessageOnSpeechEnd(speechToTextObject.getBoolean("showLanguageCode"));
+            }
+            KmSpeechToTextSetting.getInstance(currentActivity)
+                    .enableMultipleSpeechToText(true);
+                    callback.invoke(SUCCESS, "Successfully enabled Speech to text");
+
+            } catch(Exception e) {
+                callback.invoke(ERROR, e.toString());
+            }
+    }
+
+    @ReactMethod
+    public void createSettings(final String setting) {
+        final Activity currentActivity = getCurrentActivity();
+        FileUtils.writeSettingsToFile(currentActivity, setting);
     }
 
     static class KmInfoProcessor {
