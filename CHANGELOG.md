@@ -1,3 +1,9 @@
+## React Native Kommunicate Chat v2.1.5
+- Exposed enableSpeechToText() method which will create UI for multiple speech to text language - iOS
+- Added customizable option to disable chat widget in Helpcenter "hideChatInHelpcenter"
+- Attachment name and icon improvement - Android
+- Added support to delete conversation for end-user - Android
+
 ## React Native Kommunicate Chat v2.1.0
 - Exposed createSettings() methods which will create settings for both Android and iOS
 - Exposed enableSpeechToText() method which will create UI for multiple speech to text language - Android
