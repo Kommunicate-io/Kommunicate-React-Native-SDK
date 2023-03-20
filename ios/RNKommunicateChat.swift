@@ -414,9 +414,23 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         }
     }
 
-    @objc
+    @objc 
     func createSettings(_ settingString: String) {
          Kommunicate.createSettings(settings: settingString)
+    }
+
+    @objc
+    func enableSpeechToText(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        do {
+            if let languages = (data[RNKommunicateChat.KM_LANGUAGES] as? String)?.data(using: .utf8), let languageData = try JSONSerialization.jsonObject(with: languages, options : .allowFragments) as? Dictionary<String,String> {
+                    Kommunicate.defaultConfiguration.languagesForSpeechToText = languageData
+                            callback(["Success", "Successfully enabled speech to text"])
+                            return;
+                }
+        }
+        catch {
+            callback(["Error", "Invalid language data"])
+        }
     }
     
     func closeButtonTapped() {
