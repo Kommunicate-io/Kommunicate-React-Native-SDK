@@ -33,6 +33,8 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     var conversationTitle: String? = nil;
     var conversationInfo: [AnyHashable: Any]? = nil;
     static let KM_CONVERSATION_METADATA: String = "conversationMetadata";
+    static let KM_LANGUAGES: String = "languages";
+
     
     @objc
     func isLoggedIn(_ callback: RCTResponseSenderBlock) -> Void {
@@ -548,7 +550,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
     
     open override func addListener(_ eventName: String!) {
-       Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress ], callback: self)
+       Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress, CustomEvent.conversationInfoClick ], callback: self)
     }
 
     open override func removeListeners(_ count: Double) {
@@ -590,6 +592,10 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     func richMessageClicked(conversationId: String, action: [String : Any], type: String) {
         let richMessageDict: NSDictionary = ["conversationId": conversationId, "action": convertDictToString(dict: action as NSDictionary), "actionType": type]
         KMEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: ["data": convertDictToString(dict: richMessageDict)])
+    }
+
+    func conversationInfoClick() {
+        KMEventEmitter.emitter.sendEvent(withName: "onConversationInfoClicked", body: nil)
     }
     
     func convertDictToString(dict: NSDictionary) -> String {
