@@ -594,7 +594,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         KMEventEmitter.emitter.sendEvent(withName: "onRichMessageButtonClick", body: ["data": convertDictToString(dict: richMessageDict)])
     }
 
-    func conversationInfoClick() {
+    func conversationInfoClicked() {
         KMEventEmitter.emitter.sendEvent(withName: "onConversationInfoClicked", body: nil)
     }
     
