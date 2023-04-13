@@ -1,3 +1,8 @@
+## React Native Kommunicate Chat v2.1.6
+- Upgraded iOS SDK version to 6.8.7
+- Fixed build issue for iOS
+
+
 ## React Native Kommunicate Chat v2.1.5
 - Exposed enableSpeechToText() method which will create UI for multiple speech to text language - iOS
 - Added customizable option to disable chat widget in Helpcenter "hideChatInHelpcenter"
