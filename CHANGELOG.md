@@ -1,3 +1,8 @@
+## React Native Kommunicate Chat v2.1.7
+- Upgraded iOS SDK version to 6.8.8
+- Fixed form template submission issues in iOS
+
+
 ## React Native Kommunicate Chat v2.1.6
 - Upgraded iOS SDK version to 6.8.7
 - Fixed build issue for iOS
