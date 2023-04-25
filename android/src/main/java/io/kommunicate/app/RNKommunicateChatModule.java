@@ -499,6 +499,43 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         FileUtils.writeSettingsToFile(currentActivity, setting);
     }
 
+    @ReactMethod
+    public void updateDefaultSetting(final ReadableMap settingObject) {
+        final Activity currentActivity = getCurrentActivity();
+try {
+                KmSettings.clearDefaultSettings();
+                JSONObject settingObject = new JSONObject(call.arguments.toString());
+                if (settingObject.hasKey("defaultAgentIds") && !TextUtils.isEmpty(settingObject.getString("defaultAgentIds").toString())) {
+                    List<String> agentList = new ArrayList<String>();
+                    for(int i = 0; i < settingObject.getJSONArray("defaultAgentIds").length(); i++){
+                        agentList.add(settingObject.getJSONArray("defaultAgentIds").get(i).toString());
+                    }
+                    KmSettings.setDefaultAgentIds(agentList);
+                }
+                if (settingObject.hasKey("defaultBotIds") && !TextUtils.isEmpty(settingObject.get("defaultBotIds").toString())) {
+                    List<String> botList = new ArrayList<String>();
+                    for(int i = 0; i < settingObject.getJSONArray("defaultBotIds").length(); i++){
+                        botList.add(settingObject.getJSONArray("defaultBotIds").get(i).toString());
+                    }
+                    KmSettings.setDefaultBotIds(botList);
+                }
+                if (settingObject.hasKey("defaultAssignee") && !TextUtils.isEmpty(settingObject.get("defaultAssignee").toString())) {
+                    KmSettings.setDefaultAssignee(settingObject.get("defaultAssignee").toString());
+                }
+                if (settingObject.hasKey("teamId")) {
+                    KmSettings.setDefaultTeamId(settingObject.get("teamId").toString());
+                }
+                if (settingObject.hasKey("skipRouting")) {
+                    KmSettings.setSkipRouting(Boolean.valueOf(settingObject.get("skipRouting").toString()));
+                }
+                    callback.invoke(SUCCESS);
+
+            } catch(Exception e) {
+                callback.invoke(ERROR, e.toString());
+            }
+
+    }
+
     static class KmInfoProcessor {
         private String clientConversationId;
         private Integer conversationId;
