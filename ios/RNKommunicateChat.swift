@@ -435,6 +435,31 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         }
     }
     
+    @objc
+    func updateDefaultSetting(_ settingDict: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        do {
+            Kommunicate.defaultConfiguration.clearDefaultConversationSettings()
+            if(settingDict["defaultAssignee"] != nil) {
+                Kommunicate.defaultConfiguration.defaultAssignee = settingDict["defaultAssignee"] as? String
+            }
+            if(settingDict["teamId"] != nil) {
+                Kommunicate.defaultConfiguration.defaultTeamId = settingDict["teamId"] as? String
+            }
+            if let skipRouting = settingDict["skipRouting"] as? Bool {
+                Kommunicate.defaultConfiguration.defaultSkipRouting = skipRouting
+            }
+            if let agentIds = settingDict["defaultAgentIds"] as? [String], !agentIds.isEmpty {
+                Kommunicate.defaultConfiguration.defaultAgentIds = agentIds
+            }
+            if let botIds = settingDict["defaultBotIds"] as? [String], !botIds.isEmpty {
+                Kommunicate.defaultConfiguration.defaultBotIds = botIds
+            }
+        }
+        catch {
+            callback(["Error", "Invalid language data"])
+        }
+    }
+
     func closeButtonTapped() {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)
     }
