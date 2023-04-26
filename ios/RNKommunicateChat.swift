@@ -454,6 +454,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             if let botIds = settingDict["defaultBotIds"] as? [String], !botIds.isEmpty {
                 Kommunicate.defaultConfiguration.defaultBotIds = botIds
             }
+            callback(["Success", "Successfully set default settings"])
         }
         catch {
             callback(["Error", "Invalid language data"])
