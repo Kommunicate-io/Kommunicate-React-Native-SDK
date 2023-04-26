@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -38,6 +39,11 @@ import io.kommunicate.KmConversationBuilder;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import org.json.JSONObject;
+
+
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -500,36 +506,34 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void updateDefaultSetting(final ReadableMap settingObject) {
+    public void updateDefaultSetting(final ReadableMap settingMap, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
 try {
                 KmSettings.clearDefaultSettings();
-                JSONObject settingObject = new JSONObject(call.arguments.toString());
-                if (settingObject.hasKey("defaultAgentIds") && !TextUtils.isEmpty(settingObject.getString("defaultAgentIds").toString())) {
+                if (settingMap.hasKey("defaultAgentIds")) {
                     List<String> agentList = new ArrayList<String>();
-                    for(int i = 0; i < settingObject.getJSONArray("defaultAgentIds").length(); i++){
-                        agentList.add(settingObject.getJSONArray("defaultAgentIds").get(i).toString());
+                    for(int i = 0; i < settingMap.getArray("defaultAgentIds").size(); i++){
+                        agentList.add(settingMap.getArray("defaultAgentIds").getString(i));
                     }
                     KmSettings.setDefaultAgentIds(agentList);
                 }
-                if (settingObject.hasKey("defaultBotIds") && !TextUtils.isEmpty(settingObject.get("defaultBotIds").toString())) {
+                if (settingMap.hasKey("defaultBotIds")) {
                     List<String> botList = new ArrayList<String>();
-                    for(int i = 0; i < settingObject.getJSONArray("defaultBotIds").length(); i++){
-                        botList.add(settingObject.getJSONArray("defaultBotIds").get(i).toString());
+                    for(int i = 0; i < settingMap.getArray("defaultBotIds").size(); i++){
+                        botList.add(settingMap.getArray("defaultBotIds").getString(i));
                     }
                     KmSettings.setDefaultBotIds(botList);
                 }
-                if (settingObject.hasKey("defaultAssignee") && !TextUtils.isEmpty(settingObject.get("defaultAssignee").toString())) {
-                    KmSettings.setDefaultAssignee(settingObject.get("defaultAssignee").toString());
+                if (settingMap.hasKey("defaultAssignee")) {
+                    KmSettings.setDefaultAssignee(settingMap.getString("defaultAssignee"));
                 }
-                if (settingObject.hasKey("teamId")) {
-                    KmSettings.setDefaultTeamId(settingObject.get("teamId").toString());
+                if (settingMap.hasKey("teamId")) {
+                    KmSettings.setDefaultTeamId(settingMap.getString("teamId"));
                 }
-                if (settingObject.hasKey("skipRouting")) {
-                    KmSettings.setSkipRouting(Boolean.valueOf(settingObject.get("skipRouting").toString()));
+                if (settingMap.hasKey("skipRouting")) {
+                    KmSettings.setSkipRouting(settingMap.getBoolean("skipRouting"));
                 }
-                    callback.invoke(SUCCESS);
-
+                    callback.invoke(SUCCESS, "Successfully set default settings");
             } catch(Exception e) {
                 callback.invoke(ERROR, e.toString());
             }
