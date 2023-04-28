@@ -439,11 +439,11 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     func updateDefaultSetting(_ settingDict: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         do {
             Kommunicate.defaultConfiguration.clearDefaultConversationSettings()
-            if(settingDict["defaultAssignee"] != nil) {
-                Kommunicate.defaultConfiguration.defaultAssignee = settingDict["defaultAssignee"] as? String
+            if let defaultAssignee = settingDict["defaultAssignee"] as? String, !defaultAssignee.isEmpty {
+                Kommunicate.defaultConfiguration.defaultAssignee = defaultAssignee
             }
-            if(settingDict["teamId"] != nil) {
-                Kommunicate.defaultConfiguration.defaultTeamId = settingDict["teamId"] as? String
+            if let teamId = settingDict["teamId"] as? String, !teamId.isEmpty {
+                Kommunicate.defaultConfiguration.defaultTeamId = teamId
             }
             if let skipRouting = settingDict["skipRouting"] as? Bool {
                 Kommunicate.defaultConfiguration.defaultSkipRouting = skipRouting

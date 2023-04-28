@@ -43,8 +43,6 @@ import java.util.List;
 import java.util.ArrayList;
 import org.json.JSONObject;
 
-
-
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
     private static final String SUCCESS = "Success";
