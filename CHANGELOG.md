@@ -1,3 +1,7 @@
+## React Native Kommunicate Chat v2.1.8
+- Upgraded iOS SDK to 6.8.9
+- Fixed event data mismatch
+
 ## React Native Kommunicate Chat v2.1.7
 - Upgraded iOS SDK to 6.8.8
 - Upgraded Android SDK to 2.7.0
