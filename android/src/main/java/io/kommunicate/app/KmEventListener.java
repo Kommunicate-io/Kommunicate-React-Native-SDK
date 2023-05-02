@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
+import com.google.gson.Gson;
+
 
 
 
@@ -60,7 +62,7 @@ public class KmEventListener implements KmPluginEventListener {
             JSONObject messageActionObject = new JSONObject();
             messageActionObject.put("conversationId", conversationId);
             messageActionObject.put("actionType", actionType);
-            messageActionObject.put("action", action);
+            messageActionObject.put("action", new Gson().toJson(action));
             sendEvent("onRichMessageButtonClick", String.valueOf(messageActionObject));
         } catch(JSONException e) {
             sendEvent("onRichMessageButtonClick",  "error fetching data");
