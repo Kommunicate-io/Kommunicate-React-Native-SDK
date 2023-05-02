@@ -62,7 +62,7 @@ public class KmEventListener implements KmPluginEventListener {
             JSONObject messageActionObject = new JSONObject();
             messageActionObject.put("conversationId", conversationId);
             messageActionObject.put("actionType", actionType);
-            JSONObject actionjson = new JSONObject(action);
+            // JSONObject actionjson = new JSONObject(action);
             messageActionObject.put("action", new Gson().toJson(action));
             sendEvent("onRichMessageButtonClick", String.valueOf(messageActionObject));
         } catch(JSONException e) {
