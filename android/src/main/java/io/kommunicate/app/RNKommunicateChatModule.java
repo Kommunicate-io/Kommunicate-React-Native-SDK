@@ -509,13 +509,11 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             try {
                 KmSettings.clearDefaultSettings();
                 if (settingMap.hasKey("defaultAgentIds")) {
-                    List<String> agentList = new ArrayList<String>();
-                    agentList = Arrays.asList(settingMap.getArray("defaultAgentIds"));
+                    List<String> agentList = new ArrayList<String>(settingMap.getArray("defaultAgentIds"));
                     KmSettings.setDefaultAgentIds(agentList);
                 }
                 if (settingMap.hasKey("defaultBotIds")) {
-                    List<String> botList = new ArrayList<String>();
-                    botList = Arrays.asList(settingMap.getArray("defaultBotIds"));
+                    List<String> botList = new ArrayList<String>(settingMap.getArray("defaultBotIds"));
                     KmSettings.setDefaultBotIds(botList);
                 }
                 if (settingMap.hasKey("defaultAssignee")) {
