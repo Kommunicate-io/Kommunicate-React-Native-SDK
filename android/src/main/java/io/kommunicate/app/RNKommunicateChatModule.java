@@ -25,6 +25,7 @@ import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
@@ -505,20 +506,16 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateDefaultSetting(final ReadableMap settingMap, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
-try {
+            try {
                 KmSettings.clearDefaultSettings();
                 if (settingMap.hasKey("defaultAgentIds")) {
                     List<String> agentList = new ArrayList<String>();
-                    for(int i = 0; i < settingMap.getArray("defaultAgentIds").size(); i++){
-                        agentList.add(settingMap.getArray("defaultAgentIds").getString(i));
-                    }
+                    agentList = Arrays.asList(settingMap.getArray("defaultAgentIds"));
                     KmSettings.setDefaultAgentIds(agentList);
                 }
                 if (settingMap.hasKey("defaultBotIds")) {
                     List<String> botList = new ArrayList<String>();
-                    for(int i = 0; i < settingMap.getArray("defaultBotIds").size(); i++){
-                        botList.add(settingMap.getArray("defaultBotIds").getString(i));
-                    }
+                    botList = Arrays.asList(settingMap.getArray("defaultBotIds"));
                     KmSettings.setDefaultBotIds(botList);
                 }
                 if (settingMap.hasKey("defaultAssignee")) {
