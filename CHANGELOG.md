@@ -1,7 +1,7 @@
 ## React Native Kommunicate Chat v2.2.0
 - Added support for Default Settings -
 ```javascript
-- var setting = {
+var setting = {
          "defaultAgentIds": [""], //list of agentID
         "defaultBotIds": [""], // list of BotID
         "defaultAssignee": "amantoppo3199@gmail.com", //string of conversation Assignee
