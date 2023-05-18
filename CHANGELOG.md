@@ -1,3 +1,19 @@
+## React Native Kommunicate Chat v2.2.0
+- Added support for Default Settings -
+```javascript
+var setting = {
+         "defaultAgentIds": [""], //list of agentID
+        "defaultBotIds": [""], // list of BotID
+        "defaultAssignee": "amantoppo3199@gmail.com", //string of conversation Assignee
+        "skipRouting": true, // If you pass this value true then it will skip routing rules set from conversation rules section.
+         "teamId": "<pass any teamID>"
+        };
+        RNKommunicateChat.updateDefaultSetting(setting, (status, message) => {
+          console.log(message);
+        });
+```
+- Fixed closeConversatioNScreen not working in iOS
+
 ## React Native Kommunicate Chat v2.1.8
 - Upgraded iOS SDK to 6.8.9
 - Fixed event data mismatch
