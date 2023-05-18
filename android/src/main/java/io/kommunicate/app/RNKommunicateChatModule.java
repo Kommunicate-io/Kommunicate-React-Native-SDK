@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -38,6 +39,8 @@ import io.kommunicate.KmConversationBuilder;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -497,6 +500,41 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void createSettings(final String setting) {
         final Activity currentActivity = getCurrentActivity();
         FileUtils.writeSettingsToFile(currentActivity, setting);
+    }
+
+    @ReactMethod
+    public void updateDefaultSetting(final ReadableMap settingMap, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+            try {
+                KmSettings.clearDefaultSettings();
+                if (settingMap.hasKey("defaultAgentIds")) {
+                    List<String> agentList = new ArrayList<String>();
+                    for(int i = 0; i < settingMap.getArray("defaultAgentIds").size(); i++){
+                        agentList.add(settingMap.getArray("defaultAgentIds").getString(i));
+                    }
+                    KmSettings.setDefaultAgentIds(agentList);
+                }
+                if (settingMap.hasKey("defaultBotIds")) {
+                    List<String> botList = new ArrayList<String>();
+                    for(int i = 0; i < settingMap.getArray("defaultBotIds").size(); i++){
+                        botList.add(settingMap.getArray("defaultBotIds").getString(i));
+                    }
+                    KmSettings.setDefaultBotIds(botList);
+                }
+                if (settingMap.hasKey("defaultAssignee")) {
+                    KmSettings.setDefaultAssignee(settingMap.getString("defaultAssignee"));
+                }
+                if (settingMap.hasKey("teamId")) {
+                    KmSettings.setDefaultTeamId(settingMap.getString("teamId"));
+                }
+                if (settingMap.hasKey("skipRouting")) {
+                    KmSettings.setSkipRouting(settingMap.getBoolean("skipRouting"));
+                }
+                    callback.invoke(SUCCESS, "Successfully set default settings");
+            } catch(Exception e) {
+                callback.invoke(ERROR, e.toString());
+            }
+
     }
 
     static class KmInfoProcessor {
