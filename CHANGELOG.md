@@ -1,3 +1,8 @@
+## React Native Kommunicate Chat v2.2.1
+- UI/UX changes to match Android and iOS
+- Added support for Custom Input Field - Android
+- Bug fixes and optimizations
+
 ## React Native Kommunicate Chat v2.2.0
 - Added support for Default Settings -
 ```javascript
