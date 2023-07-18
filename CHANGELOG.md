@@ -1,3 +1,9 @@
+## React Native Kommunicate Chat v2.2.3
+- Fixed visibility of startNewConversation button
+- Added support for API Suggestions
+- Added "showTypingIndicatorWhileFetchingResponse" settings to show typing indicator when bot fetching response
+- Crashes fixed
+
 ## React Native Kommunicate Chat v2.2.1
 - UI/UX changes to match Android and iOS
 - Added support for Custom Input Field - Android
