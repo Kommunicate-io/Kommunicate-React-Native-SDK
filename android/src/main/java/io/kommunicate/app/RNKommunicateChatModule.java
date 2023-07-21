@@ -469,34 +469,6 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void enableSpeechToText(final ReadableMap speechToTextObject, final Callback callback) {
-        final Activity currentActivity = getCurrentActivity();
-        try {
-            Map<String, String> language = null;
-
-            if (speechToTextObject.hasKey(LANGUAGES)) {
-                language = (Map<String, String>) GsonUtils.getObjectFromJson(speechToTextObject.getString(LANGUAGES), Map.class);
-                KmSpeechToTextSetting.getInstance(currentActivity)
-                .setMultipleLanguage(language);
-            }
-            if (speechToTextObject.hasKey("sendMessageOnSpeechEnd")) {
-                KmSpeechToTextSetting.getInstance(currentActivity)
-                .sendMessageOnSpeechEnd(speechToTextObject.getBoolean("sendMessageOnSpeechEnd"));
-            }
-            if (speechToTextObject.hasKey("showLanguageCode")) {
-                KmSpeechToTextSetting.getInstance(currentActivity)
-                .sendMessageOnSpeechEnd(speechToTextObject.getBoolean("showLanguageCode"));
-            }
-            KmSpeechToTextSetting.getInstance(currentActivity)
-                    .enableMultipleSpeechToText(true);
-                    callback.invoke(SUCCESS, "Successfully enabled Speech to text");
-
-            } catch(Exception e) {
-                callback.invoke(ERROR, e.toString());
-            }
-    }
-
-    @ReactMethod
     public void createSettings(final String setting) {
         final Activity currentActivity = getCurrentActivity();
         FileUtils.writeSettingsToFile(currentActivity, setting);
