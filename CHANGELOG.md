@@ -1,3 +1,9 @@
+## React Native Kommunicate Chat v2.2.4
+- Added support to send message on language change
+- Show/Hide Template message buttons when resolved conversation
+- Fixed refresh icon squeeze and crashes - Android
+- Fixed the form submission with empty fields issue
+  
 ## React Native Kommunicate Chat v2.2.3
 - Fixed visibility of startNewConversation button
 - Added support for API Suggestions
