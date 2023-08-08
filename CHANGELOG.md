@@ -1,3 +1,9 @@
+# React Native Kommunicate Chat v2.2.5
+- Fixed down arrow coming in bottom of the screen when welcome message get rendered issue.
+- Form Submit button width is corrected.
+- Added border to the form and removed paddding form the top of each cell.
+- Fixed UI/UX mismatches across platforms
+
 ## React Native Kommunicate Chat v2.2.4
 - Added support to send message on language change
 - Show/Hide Template message buttons when resolved conversation
