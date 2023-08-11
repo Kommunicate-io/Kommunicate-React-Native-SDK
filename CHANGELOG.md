@@ -1,4 +1,8 @@
 # React Native Kommunicate Chat v2.2.5
+- Updated Refresh icon on conversation screen - iOS
+- Improved the UI of Multiple language selection Page - iOS
+
+# React Native Kommunicate Chat v2.2.5
 - Fixed down arrow coming in bottom of the screen when welcome message get rendered issue.
 - Form Submit button width is corrected.
 - Added border to the form and removed paddding form the top of each cell.
