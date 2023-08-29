@@ -1,4 +1,7 @@
-# React Native Kommunicate Chat v2.2.5
+# React Native Kommunicate Chat v2.2.7
+- UI/UX improvements and fixed tool bar issue in android
+- Fixed Rating bar & keyboard overlap issue
+# React Native Kommunicate Chat v2.2.6
 - Updated Refresh icon on conversation screen - iOS
 - Improved the UI of Multiple language selection Page - iOS
 
