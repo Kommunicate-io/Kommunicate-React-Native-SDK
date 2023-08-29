@@ -90,6 +90,8 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             Kommunicate.init(currentActivity, user.getApplicationId());
         }
 
+        user.setPlatform(User.Platform.REACT_NATIVE.getValue());
+
         Kommunicate.login(currentActivity, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
