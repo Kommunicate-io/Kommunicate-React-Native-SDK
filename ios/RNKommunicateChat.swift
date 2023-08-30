@@ -87,6 +87,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         if(user["metadata"] != nil){
             kmUser.metadata = user["metadata"] as? NSMutableDictionary
         }
+        kmUser.platform = 7 // 7 is for React Native
         Kommunicate.setup(applicationId: kmUser.applicationId)
         Kommunicate.registerUser(kmUser, completion: {
             response, error in
@@ -104,7 +105,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         kmUser.userId = Kommunicate.randomId()
         Kommunicate.setup(applicationId: appId)
         kmUser.applicationId = appId
-        
+        kmUser.platform = 7 // 7 is for React Native
         Kommunicate.registerUser(kmUser, completion: {
             response, error in
             guard error == nil else{

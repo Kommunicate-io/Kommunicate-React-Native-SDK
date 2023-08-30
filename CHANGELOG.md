@@ -1,3 +1,5 @@
+# [Unreleased]
+- Added Platform flag in login call
 # React Native Kommunicate Chat v2.2.7
 - UI/UX improvements and fixed tool bar issue in android
 - Fixed Rating bar & keyboard overlap issue
