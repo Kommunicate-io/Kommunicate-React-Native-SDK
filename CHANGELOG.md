@@ -1,5 +1,9 @@
-# [Unreleased]
-- Added Platform flag in login call
+# React Native Kommunicate Chat v2.2.8
+- Upgraded minimum SDK version to iOS 13.0  - iOS
+- Passed kmUserLocale in groupMetadata and messageMetaData - iOS
+- Added support for Sending GIF from device - iOS
+- Exposed a customisation function for a rating menu icon on conversation screen. - Android & iOS
+
 # React Native Kommunicate Chat v2.2.7
 - UI/UX improvements and fixed tool bar issue in android
 - Fixed Rating bar & keyboard overlap issue
