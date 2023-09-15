@@ -1,3 +1,6 @@
+# React Native Kommunicate Chat v2.2.9
+- Fixed android build issue
+
 # React Native Kommunicate Chat v2.2.8
 - Upgraded minimum SDK version to iOS 13.0  - iOS
 - Passed kmUserLocale in groupMetadata and messageMetaData - iOS
