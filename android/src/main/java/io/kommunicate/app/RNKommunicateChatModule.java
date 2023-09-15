@@ -89,8 +89,6 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
         if (user != null && !TextUtils.isEmpty(user.getApplicationId())) {
             Kommunicate.init(currentActivity, user.getApplicationId());
         }
-
-        user.setPlatform(User.Platform.REACT_NATIVE.getValue());
         
         Kommunicate.login(currentActivity, user, new KMLoginHandler() {
             @Override
