@@ -1,3 +1,10 @@
+# React Native Kommunicate Chat v2.3.0
+- Fixed a crash that was happening by message template customisation - Android
+- Added Support For Auto Suggestions Rich Message - iOS
+- Added pseudonym support -  iOS 
+- Added support for custom input field rich message - iOS
+- Added support for XCode 15 - iOS
+
 # React Native Kommunicate Chat v2.2.9
 - Fixed android build issue
 
