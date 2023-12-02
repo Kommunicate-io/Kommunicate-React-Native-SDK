@@ -509,11 +509,11 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
     }
 
-    public String fetchUnreadCount() {
+    public String fetchUnreadCount(final Callback callback) {
         try {
-            result.success(String.valueOf(new MessageDatabaseService(context).getTotalUnreadCount()));
+            callback.invoke(SUCCESS, String.valueOf(new MessageDatabaseService(context).getTotalUnreadCount()));
         } catch (Exception e) {
-            result.error(ERROR, e.toString(), null);
+            callback.invoke(ERROR, e.toString)
         }
     }
 
