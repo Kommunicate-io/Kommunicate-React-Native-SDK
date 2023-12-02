@@ -1,3 +1,5 @@
+#[Unreleased]
+- Fixed `openparticularconversation` bug when single threaded is enabled
 # React Native Kommunicate Chat v2.3.0
 - Fixed a crash that was happening by message template customisation - Android
 - Added Support For Auto Suggestions Rich Message - iOS

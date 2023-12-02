@@ -299,21 +299,87 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, "Activity does not exist.");
             return;
         }
-        try {
-            KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    callback.invoke(SUCCESS, message.toString());
-                }
-
-                @Override
-                public void onFailure(Object error) {
-                    callback.invoke(ERROR, error.toString());
-                }
-            });
-        } catch (KmException k) {
-            callback.invoke(ERROR, k.toString());
+        if (TextUtils.isEmpty(conversationId)) {
+            result.error(ERROR, "Invalid or empty clientConversationId", null);
+            return;
         }
+
+        new KmConversationInfoTask(currentActivity, conversationId, new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                if (channel != null) {
+                    try {
+                        KmConversationHelper.openConversation(context, true, channel.getKey(), new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                result.success(message.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                result.error(ERROR, error.toString(), null);
+                            }
+                        });
+                    } catch (KmException k) {
+                        result.error(ERROR, k.getMessage(), null);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                new KmConversationInfoTask(context, Integer.valueOf(conversationId), new KmGetConversationInfoCallback() {
+                    @Override
+                    public void onSuccess(Channel channel, Context context) {
+                        if (channel != null) {
+
+                                Kommunicate.openConversation(context, channel.getKey(), new KmCallback() {
+                                    @Override
+                                    public void onSuccess(Object message) {
+                                        result.success(message.toString());
+                                    }
+
+                                    @Override
+                                    public void onFailure(Object error) {
+                                        result.error(ERROR, error.toString(), null);
+                                    }
+                                });
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e, Context context) {
+                        result.error(ERROR, e != null ? e.getMessage() : "Invalid conversationId", null);
+                    }
+                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    } catch (Exception e) {
+        result.error(ERROR, e.toString(), null);
+    }
+       
+       
+       
+       
+       
+       
+       
+        // try {
+        //     KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
+        //         @Override
+        //         public void onSuccess(Object message) {
+        //             callback.invoke(SUCCESS, message.toString());
+        //         }
+
+        //         @Override
+        //         public void onFailure(Object error) {
+        //             callback.invoke(ERROR, error.toString());
+        //         }
+        //     });
+        // } catch (KmException k) {
+        //     callback.invoke(ERROR, k.toString());
+        // }
 
     }
 
