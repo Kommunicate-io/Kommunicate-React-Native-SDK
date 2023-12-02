@@ -447,6 +447,12 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             callback(["Error", "Invalid language data"])
         }
     }
+    
+    @objc
+    func fetchUnreadCount(_ callback: RCTResponseSenderBlock) -> Void {
+        let unreadcount = ALUserService().getTotalUnreadCount()?.stringValue
+        callback([unreadcount])
+    }
 
     func closeButtonTapped() {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)

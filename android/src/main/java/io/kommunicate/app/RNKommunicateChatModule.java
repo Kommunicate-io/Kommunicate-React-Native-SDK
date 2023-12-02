@@ -22,6 +22,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -506,7 +507,14 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             } catch(Exception e) {
                 callback.invoke(ERROR, e.toString());
             }
+    }
 
+    public String fetchUnreadCount() {
+        try {
+            result.success(String.valueOf(new MessageDatabaseService(context).getTotalUnreadCount()));
+        } catch (Exception e) {
+            result.error(ERROR, e.toString(), null);
+        }
     }
 
     static class KmInfoProcessor {
