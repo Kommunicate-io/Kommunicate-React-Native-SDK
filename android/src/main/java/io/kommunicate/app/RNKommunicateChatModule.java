@@ -41,6 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import android.os.AsyncTask;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
+import io.kommunicate.async.KmConversationInfoTask;
+
+
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -291,6 +296,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, e.getMessage());
         }
     }
+    
 
     @ReactMethod
     public void openParticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
@@ -300,7 +306,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             return;
         }
         if (TextUtils.isEmpty(conversationId)) {
-            result.error(ERROR, "Invalid or empty clientConversationId", null);
+            callback.invoke(ERROR, "Invalid or empty clientConversationId.");
             return;
         }
 
@@ -312,16 +318,16 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                         KmConversationHelper.openConversation(context, true, channel.getKey(), new KmCallback() {
                             @Override
                             public void onSuccess(Object message) {
-                                result.success(message.toString());
+                                callback.invoke(SUCCESS,message.toString());
                             }
 
                             @Override
                             public void onFailure(Object error) {
-                                result.error(ERROR, error.toString(), null);
+                                callback.invoke(ERROR, error.toString());
                             }
                         });
                     } catch (KmException k) {
-                        result.error(ERROR, k.getMessage(), null);
+                        callback.invoke(ERROR, k.getMessage());
                     }
                 }
             }
@@ -336,12 +342,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                                 Kommunicate.openConversation(context, channel.getKey(), new KmCallback() {
                                     @Override
                                     public void onSuccess(Object message) {
-                                        result.success(message.toString());
+                                        callback.invoke(SUCCESS,message.toString());
                                     }
 
                                     @Override
                                     public void onFailure(Object error) {
-                                        result.error(ERROR, error.toString(), null);
+                                        callback.invoke(ERROR, error.toString());
                                     }
                                 });
 
@@ -350,38 +356,15 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
                     @Override
                     public void onFailure(Exception e, Context context) {
-                        result.error(ERROR, e != null ? e.getMessage() : "Invalid conversationId", null);
+                        callback.invoke(ERROR, e != null ? e.getMessage() : "Invalid conversationId");
                     }
                 }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    } catch (Exception e) {
-        result.error(ERROR, e.toString(), null);
-    }
-       
-       
-       
-       
-       
-       
-       
-        // try {
-        //     KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
-        //         @Override
-        //         public void onSuccess(Object message) {
-        //             callback.invoke(SUCCESS, message.toString());
-        //         }
+    } 
 
-        //         @Override
-        //         public void onFailure(Object error) {
-        //             callback.invoke(ERROR, error.toString());
-        //         }
-        //     });
-        // } catch (KmException k) {
-        //     callback.invoke(ERROR, k.toString());
-        // }
 
-    }
+    
 
     @ReactMethod
     public void isLoggedIn(final Callback callback) {
