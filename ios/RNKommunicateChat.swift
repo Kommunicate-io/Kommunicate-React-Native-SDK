@@ -451,7 +451,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     @objc
     func fetchUnreadCount(_ callback: RCTResponseSenderBlock) -> Void {
         let unreadcount = ALUserService().getTotalUnreadCount()?.stringValue
-        callback([unreadcount])
+        callback(["Success",unreadcount])
     }
 
     func closeButtonTapped() {
