@@ -532,7 +532,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 @Override
                 public void onSuccess(Channel channel, Context context) {
                     if (channel != null) {
-                        callback.invoke(SUCCESS,channel.getKey());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(channel, Channel.class));
                     } else {
                         callback.invoke(ERROR,"Conversation Not Found");
                     }
@@ -549,7 +549,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 @Override
                 public void onSuccess(Channel channel, Context context) {
                     if (channel != null) {
-                        callback.invoke(SUCCESS, channel.getKey());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(channel, Channel.class));
                     } else {
                         callback.invoke(ERROR, "Conversation Not Found", null);
                     }
@@ -574,7 +574,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 public void onSuccess(Channel channel, Context context) {
                     if (channel != null) {
                         Contact assignee = new AppContactService(currentActivity).getContactById(channel.getConversationAssignee());
-                        callback.invoke(SUCCESS, assignee.getDisplayName());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(assignee, Contact.class));
                     } else {
                         callback.invoke(ERROR,"Conversation Not Found");
                     }
@@ -592,7 +592,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 public void onSuccess(Channel channel, Context context) {
                     if (channel != null) {
                         Contact assignee = new AppContactService(currentActivity).getContactById(channel.getConversationAssignee());
-                        callback.invoke(SUCCESS, assignee.getDisplayName());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(assignee, Contact.class));
                     } else {
                         callback.invoke(ERROR, "Conversation Not Found", null);
                     }
