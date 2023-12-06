@@ -41,6 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import android.os.AsyncTask;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
+import io.kommunicate.async.KmConversationInfoTask;
+
+
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -291,6 +296,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, e.getMessage());
         }
     }
+    
 
     @ReactMethod
     public void openParticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
@@ -299,23 +305,66 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, "Activity does not exist.");
             return;
         }
-        try {
-            KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    callback.invoke(SUCCESS, message.toString());
-                }
-
-                @Override
-                public void onFailure(Object error) {
-                    callback.invoke(ERROR, error.toString());
-                }
-            });
-        } catch (KmException k) {
-            callback.invoke(ERROR, k.toString());
+        if (TextUtils.isEmpty(conversationId)) {
+            callback.invoke(ERROR, "Invalid or empty clientConversationId.");
+            return;
         }
 
-    }
+        new KmConversationInfoTask(currentActivity, conversationId, new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                if (channel != null) {
+                    try {
+                        KmConversationHelper.openConversation(context, true, channel.getKey(), new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                callback.invoke(SUCCESS,message.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                callback.invoke(ERROR, error.toString());
+                            }
+                        });
+                    } catch (KmException k) {
+                        callback.invoke(ERROR, k.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                new KmConversationInfoTask(context, Integer.valueOf(conversationId), new KmGetConversationInfoCallback() {
+                    @Override
+                    public void onSuccess(Channel channel, Context context) {
+                        if (channel != null) {
+
+                                Kommunicate.openConversation(context, channel.getKey(), new KmCallback() {
+                                    @Override
+                                    public void onSuccess(Object message) {
+                                        callback.invoke(SUCCESS,message.toString());
+                                    }
+
+                                    @Override
+                                    public void onFailure(Object error) {
+                                        callback.invoke(ERROR, error.toString());
+                                    }
+                                });
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e, Context context) {
+                        callback.invoke(ERROR, e != null ? e.getMessage() : "Invalid conversationId");
+                    }
+                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    } 
+
+
+    
 
     @ReactMethod
     public void isLoggedIn(final Callback callback) {
