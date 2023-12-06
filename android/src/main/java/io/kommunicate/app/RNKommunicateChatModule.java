@@ -3,6 +3,8 @@ package io.kommunicate.app;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.os.AsyncTask;
+
 
 
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
@@ -24,8 +26,6 @@ import com.facebook.react.bridge.Arguments;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
@@ -42,6 +42,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import android.os.AsyncTask;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
+import io.kommunicate.async.KmConversationInfoTask;
+
+
+
+import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.contact.Contact;
+import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
+import com.applozic.mobicomkit.api.conversation.AlTotalUnreadCountTask;
+import io.kommunicate.preference.KmConversationInfoSetting;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
+import com.applozic.mobicomkit.api.conversation.MessageBuilder;
+import io.kommunicate.async.KmConversationInfoTask;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
+import io.kommunicate.services.KmChannelService;
+
+
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
@@ -292,6 +311,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, e.getMessage());
         }
     }
+    
 
     @ReactMethod
     public void openParticularConversation(final String conversationId, final boolean skipConversationList, final Callback callback) {
@@ -300,23 +320,66 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(ERROR, "Activity does not exist.");
             return;
         }
-        try {
-            KmConversationHelper.openConversation(currentActivity, skipConversationList, Integer.parseInt(conversationId), new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    callback.invoke(SUCCESS, message.toString());
-                }
-
-                @Override
-                public void onFailure(Object error) {
-                    callback.invoke(ERROR, error.toString());
-                }
-            });
-        } catch (KmException k) {
-            callback.invoke(ERROR, k.toString());
+        if (TextUtils.isEmpty(conversationId)) {
+            callback.invoke(ERROR, "Invalid or empty clientConversationId.");
+            return;
         }
 
-    }
+        new KmConversationInfoTask(currentActivity, conversationId, new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                if (channel != null) {
+                    try {
+                        KmConversationHelper.openConversation(context, true, channel.getKey(), new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                callback.invoke(SUCCESS,message.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                callback.invoke(ERROR, error.toString());
+                            }
+                        });
+                    } catch (KmException k) {
+                        callback.invoke(ERROR, k.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                new KmConversationInfoTask(context, Integer.valueOf(conversationId), new KmGetConversationInfoCallback() {
+                    @Override
+                    public void onSuccess(Channel channel, Context context) {
+                        if (channel != null) {
+
+                                Kommunicate.openConversation(context, channel.getKey(), new KmCallback() {
+                                    @Override
+                                    public void onSuccess(Object message) {
+                                        callback.invoke(SUCCESS,message.toString());
+                                    }
+
+                                    @Override
+                                    public void onFailure(Object error) {
+                                        callback.invoke(ERROR, error.toString());
+                                    }
+                                });
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e, Context context) {
+                        callback.invoke(ERROR, e != null ? e.getMessage() : "Invalid conversationId");
+                    }
+                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    } 
+
+
+    
 
     @ReactMethod
     public void isLoggedIn(final Callback callback) {
@@ -516,6 +579,90 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             callback.invoke(SUCCESS, String.valueOf(new MessageDatabaseService(currentActivity).getTotalUnreadCount()));
         } catch (Exception e) {
             callback.invoke(ERROR, e.toString());
+        }
+    }
+
+    @ReactMethod
+    public void fetchConversationInformation(final ReadableMap data,final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (data.hasKey("conversationID") && !TextUtils.isEmpty(data.getString("conversationID"))) {
+            String conversationID = data.getString("conversationID") ;
+            new KmConversationInfoTask(currentActivity, Integer.valueOf(conversationID), new KmGetConversationInfoCallback() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    if (channel != null) {
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(channel, Channel.class));
+                    } else {
+                        callback.invoke(ERROR,"Conversation Not Found");
+                    }
+                }
+                @Override
+                public void onFailure(Exception e, Context context) {
+                    callback.invoke(ERROR,e != null ? e.getMessage() : "Invalid ConversationID");
+                }  
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        } else if (data.hasKey("clientConversationID") && !TextUtils.isEmpty(data.getString("clientConversationID"))) {
+            String clientConversationID = data.getString("clientConversationID");
+            new KmConversationInfoTask(currentActivity, clientConversationID, new KmGetConversationInfoCallback() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    if (channel != null) {
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(channel, Channel.class));
+                    } else {
+                        callback.invoke(ERROR, "Conversation Not Found", null);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e, Context context) {
+                    callback.invoke(ERROR, e != null ? e.getMessage() : "Invalid clientChannelID");
+                }  
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            callback.invoke(ERROR, "Object doesn't contain 'clientChannelID' or 'conversationID'");
+        }
+    }
+
+    @ReactMethod
+    public void fetchConversationAssigneeInfo(final ReadableMap data,final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (data.hasKey("conversationID") && !TextUtils.isEmpty(data.getString("conversationID"))) {
+            String conversationID = data.getString("conversationID") ;
+            new KmConversationInfoTask(currentActivity, Integer.valueOf(conversationID), new KmGetConversationInfoCallback() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    if (channel != null) {
+                        Contact assignee = new AppContactService(currentActivity).getContactById(channel.getConversationAssignee());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(assignee, Contact.class));
+                    } else {
+                        callback.invoke(ERROR,"Conversation Not Found");
+                    }
+                }
+                @Override
+                public void onFailure(Exception e, Context context) {
+                    callback.invoke(ERROR,e != null ? e.getMessage() : "Invalid ConversationID");
+                }  
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        } else if (data.hasKey("clientConversationID") && !TextUtils.isEmpty(data.getString("clientConversationID"))) {
+            String clientConversationID = data.getString("clientConversationID");
+            new KmConversationInfoTask(currentActivity, clientConversationID, new KmGetConversationInfoCallback() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    if (channel != null) {
+                        Contact assignee = new AppContactService(currentActivity).getContactById(channel.getConversationAssignee());
+                        callback.invoke(SUCCESS, GsonUtils.getJsonFromObject(assignee, Contact.class));
+                    } else {
+                        callback.invoke(ERROR, "Conversation Not Found", null);
+                    }
+                }
+                @Override
+                public void onFailure(Exception e, Context context) {
+                    callback.invoke(ERROR, e != null ? e.getMessage() : "Invalid clientChannelID");
+                }  
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            callback.invoke(ERROR, "Object doesn't contain 'clientChannelID' or 'conversationID'");
         }
     }
 
