@@ -274,20 +274,19 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             builder.withMetaData(conversationInfo)
         }
         
-        Kommunicate.createConversation(conversation: builder.build(),
-                                       completion: { response in
-                                        switch response {
-                                        case .success(let conversationId):
-                                            if self.createOnly {
-                                                self.callback!(["Success", conversationId])
-                                            } else {
-                                                self.openParticularConversation(conversationId, true, self.callback!)
-                                            }
-                                            
-                                        case .failure(let error):
-                                            self.callback!(["Error", error.localizedDescription])
-                                        }
-                                       })
+        Kommunicate.createConversation(conversation: builder.build(), completion: { response in
+            switch response {
+            case .success(let conversationId):
+                if self.createOnly {
+                    self.callback!(["Success", conversationId])
+                } else {
+                    self.openParticularConversation(conversationId, true, self.callback!)
+                }
+                
+            case .failure(let error):
+                self.callback!(["Error", error.localizedDescription])
+            }
+        })
     }
     
     @objc
@@ -447,6 +446,88 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             callback(["Error", "Invalid language data"])
         }
     }
+
+    @objc
+    func fetchConversationInformation(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        let alChannelService = ALChannelService()
+        if let conversationID = data["conversationID"] as? String {
+            guard let channelID = Int(conversationID) as? Int else {
+                callback(["Error", "conversationID is not Integer"])
+                return
+            }
+            alChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
+                guard let channel = channel else {
+                    callback(["Error", "Conversation Not Found"])
+                    return
+                }
+                callback(["Success", self.convertDictToString(dict: channel.toDictionary() as NSDictionary) ])
+            }
+        } else if let clientConversationID = data["clientConversationID"] {
+            guard let clientChannelKey = clientConversationID as? String else {
+                callback(["Error", "clientConversationID is not String"])
+                return
+            }
+
+            alChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
+                guard let channel = channel else {
+                    callback(["Error", "Conversation Not Found"])
+                    return
+                }
+                callback(["Success", self.convertDictToString(dict: channel.toDictionary() as NSDictionary)])
+            }
+        } else {
+            callback(["Error", "Object doesn't contain 'conversationID' or 'clientConversationID'"])
+        }
+    }
+    
+    @objc
+    func fetchConversationAssigneeInfo(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) {
+        let alChannelService = ALChannelService()
+        if let conversationID = data["conversationID"] as? String {
+            guard let channelID = Int(conversationID) as? Int else {
+                callback(["Error", "conversationID is not Integer"])
+                return
+            }
+            alChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
+                guard let channel = channel else {
+                    callback(["Error", "Channel Not Found"])
+                    return
+                }
+                
+                if let assigneeId = channel.metadata?["CONVERSATION_ASSIGNEE"] as? String,
+                   let user = ALContactService().loadContact(byKey: "userId", value: assigneeId) {
+                    let userString = self.convertDictToString(dict:user.toDictionary() as NSDictionary)
+                    callback(["Success", userString])
+
+                } else {
+                    callback(["Error", "Conversation Assignee Not Found"])
+                }
+            }
+        } else if let clientConversationID = data["clientConversationID"] {
+            guard let clientChannelKey = clientConversationID as? String else {
+                callback(["Error", "clientConversationID is not String"])
+                return
+            }
+
+            alChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
+                guard let channel = channel else {
+                    callback(["Error", "Conversation Not Found"])
+                    return
+                }
+                if let assigneeId = channel.metadata?["CONVERSATION_ASSIGNEE"] as? String,
+                   let user = ALContactService().loadContact(byKey: "userId", value: assigneeId) {
+                    let userString = self.convertDictToString(dict:user.toDictionary() as NSDictionary)
+                    callback(["Success", userString])
+                } else {
+                    callback(["Error", "Conversation Assignee Not Found"])
+                }
+            }
+        } else {
+            callback(["Error", "Object doesn't contain 'conversationID' or 'clientConversationID'"])
+        }
+    }
+    
+    
 
     func closeButtonTapped() {
         UIApplication.topViewController()?.dismiss(animated: false, completion: nil)
@@ -652,5 +733,33 @@ extension UIApplication {
             return topViewController(controller: presented)
         }
         return controller
+    }
+}
+
+extension ALContact {
+    func toDictionary() -> [String:Any] {
+        var dict: [String: Any] = [:]
+        dict["userID"] = self.userId
+        dict["displayName"] = self.displayName
+        dict["imageURL"] = self.contactImageUrl
+        dict["email"] = self.email
+        dict["roleType"] = self.roleType
+        dict["metadata"] = self.metadata
+        return dict
+    }
+}
+
+extension ALChannel {
+    func toDictionary() -> [String:Any] {
+        var dict: [String: Any] = [:]
+        dict["key"] = self.key
+        dict["clientConversationID"] = self.clientChannelKey
+        dict["name"] = self.name
+        dict["imageUrl"] = self.channelImageURL
+        dict["adminKey"] = self.adminKey
+        dict["unreadCount"] = self.unreadCount
+        dict["metadata"] = self.metadata
+        dict["userCount"] = self.userCount
+        return dict
     }
 }

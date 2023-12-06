@@ -31,7 +31,8 @@ RCT_EXTERN_METHOD (closeConversationScreen);
 RCT_EXTERN_METHOD (createSettings: (NSString * _Nonnull) );
 RCT_EXTERN_METHOD (enableSpeechToText: (NSDictionary<NSString *, id> * _Nonnull)infoData :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (updateDefaultSetting: (NSDictionary<NSString *, id> * _Nonnull)settingData :(RCTResponseSenderBlock _Nonnull)callback);
-
+RCT_EXTERN_METHOD (fetchConversationInformation : (NSDictionary<NSString *, id> * _Nonnull) data :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (fetchConversationAssigneeInfo : (NSDictionary<NSString *, id> * _Nonnull) data :(RCTResponseSenderBlock _Nonnull)callback);
 
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end
