@@ -1,6 +1,7 @@
-# [Unreleased]
+# React Native Kommunicate Chat v2.3.1
 - Exposed a function to fetch unreadcount
 - Fixed `openparticularconversation` bug when single threaded is enabled
+- Exposed a function to fetch channel info, conversation assignee info
 
 # React Native Kommunicate Chat v2.3.0
 - Fixed a crash that was happening by message template customisation - Android
