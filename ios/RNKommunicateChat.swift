@@ -446,6 +446,12 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             callback(["Error", "Invalid language data"])
         }
     }
+    
+    @objc
+    func fetchUnreadCount(_ callback: RCTResponseSenderBlock) -> Void {
+        let unreadcount = ALUserService().getTotalUnreadCount()?.stringValue
+        callback(["Success",unreadcount])
+    }
 
     @objc
     func fetchConversationInformation(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
