@@ -450,8 +450,8 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     @objc
     func fetchConversationInformation(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         let alChannelService = ALChannelService()
-        if let conversationID = data["conversationID"] {
-            guard let channelID = conversationID as? Int else {
+        if let conversationID = data["conversationID"] as? String {
+            guard let channelID = Int(conversationID) as? Int else {
                 callback(["Error", "conversationID is not Integer"])
                 return
             }
@@ -473,9 +473,6 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
                     callback(["Error", "Conversation Not Found"])
                     return
                 }
-                
-               
-
                 callback(["Success", self.convertDictToString(dict: channel.toDictionary() as NSDictionary)])
             }
         } else {
@@ -486,8 +483,8 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     @objc
     func fetchConversationAssigneeInfo(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) {
         let alChannelService = ALChannelService()
-        if let conversationID = data["conversationID"] {
-            guard let channelID = conversationID as? Int else {
+        if let conversationID = data["conversationID"] as? String {
+            guard let channelID = Int(conversationID) as? Int else {
                 callback(["Error", "conversationID is not Integer"])
                 return
             }
