@@ -688,6 +688,10 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         let ratingDict: NSDictionary = ["conversationId": conversationId, "rating":rating, "feedback": comment]
         KMEventEmitter.emitter.sendEvent(withName: "onSubmitRatingClick", body: ["data": convertDictToString(dict: ratingDict)])
     }
+
+    func conversationResolved(conversationId: String) {
+        KMEventEmitter.emitter.sendEvent(withName: "onConversationResolve", body: ["data":conversationId])
+    }
     
     func richMessageClicked(conversationId: String, action: Any, type: String) {
         let jsonEncoder = JSONEncoder()
