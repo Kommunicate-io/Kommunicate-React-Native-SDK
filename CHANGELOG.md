@@ -1,3 +1,7 @@
+# React Native Kommunicate Chat v2.3.2
+- Upgraded iOS SDK to 7.1.3
+
+
 # React Native Kommunicate Chat v2.3.1
 - Exposed a function to fetch unreadcount
 - Fixed `openparticularconversation` bug when single threaded is enabled
