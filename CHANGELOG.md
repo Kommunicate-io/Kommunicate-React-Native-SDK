@@ -1,6 +1,17 @@
+# Reach Native Kommunicate CHat v2.3.3
+- Fixed assignee profile image on conversation screen - iOS
+- Fixed Assigne name is cropping issue on covnersation screen - iOS
+- Improved read receipt label for messages. - iOS
+- Improved the Flow of Showing Rating Bar. - iOS
+- Fixed Link preview issue in iOS
+- Added the last Message icon in Conversation List Screen in iOS
+- Added support for iframe in HTML type rich message - Android
+- Fixed location sharing issues - Android
+- Image full screen view improvement - Android
+- Added back button in in-app browser - Android
+
 # React Native Kommunicate Chat v2.3.2
 - Upgraded iOS SDK to 7.1.3
-
 
 # React Native Kommunicate Chat v2.3.1
 - Exposed a function to fetch unreadcount
