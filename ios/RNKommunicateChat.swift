@@ -650,7 +650,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
     
     open override func addListener(_ eventName: String!) {
-       Kommunicate.subscribeCustomEvents(events: [CustomEvent.messageReceive, CustomEvent.messageSend,CustomEvent.faqClick, CustomEvent.newConversation, CustomEvent.submitRatingClick, CustomEvent.restartConversationClick, CustomEvent.richMessageClick, CustomEvent.conversationBackPress, CustomEvent.conversationListBackPress, CustomEvent.conversationInfoClick ], callback: self)
+       Kommunicate.subscribeCustomEvents(events: [KMCustomEvent.messageReceive, KMCustomEvent.messageSend,KMCustomEvent.faqClick, KMCustomEvent.newConversation, KMCustomEvent.submitRatingClick, KMCustomEvent.restartConversationClick, KMCustomEvent.richMessageClick, KMCustomEvent.conversationBackPress, KMCustomEvent.conversationListBackPress, KMCustomEvent.conversationInfoClick ], callback: self)
     }
 
     open override func removeListeners(_ count: Double) {
@@ -696,7 +696,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     func richMessageClicked(conversationId: String, action: Any, type: String) {
         let jsonEncoder = JSONEncoder()
         var actionString: String = ""
-        if action is ListTemplate.Element, let actionElement = action as? ListTemplate.Element,
+        if action is KMListTemplate.Element, let actionElement = action as? KMListTemplate.Element,
            let jsonData = try? jsonEncoder.encode(actionElement)
         {
             actionString = String(data: jsonData, encoding: String.Encoding.utf8) ?? ""
