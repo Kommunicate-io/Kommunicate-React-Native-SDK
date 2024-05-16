@@ -1,4 +1,4 @@
-# React Native Kommunicate Chat v2.3.3
+# React Native Kommunicate Chat v2.3.4
 - Fixed Build issue due to latest release of iOS Module
 # React Native Kommunicate Chat v2.3.3
 - Fixed assignee profile image on conversation screen - iOS
