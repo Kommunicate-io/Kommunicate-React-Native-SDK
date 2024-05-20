@@ -89,13 +89,13 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         }
         kmUser.platform = 7 // 7 is for React Native
         Kommunicate.setup(applicationId: kmUser.applicationId)
-        Kommunicate.registerUser(kmUser, completion: {
-            response, error in
-            guard error == nil else{
-                callback(["Error", error as Any])
+        Kommunicate.registerUser(kmUser, completion: { response, error in
+            guard let response = response else {
+                callback(["Error", error?.localizedDescription ??  "Failed to login the user"])
                 return
             }
-            callback(["Success", response as Any])
+//            callback(["Success", response as Any])
+            callback(["Success", response.toDictionary() as NSDictionary])
         })
     }
     
@@ -108,11 +108,13 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         kmUser.platform = 7 // 7 is for React Native
         Kommunicate.registerUser(kmUser, completion: {
             response, error in
-            guard error == nil else{
-                callback(["Error", error as Any])
+            guard let response = response else{
+                callback(["Error", error?.localizedDescription ?? "Failed to login the user"])
                 return
             }
             callback(["Success", response as Any])
+
+//            callback(["Success", response.toDictionary() as NSDictionary])
         })
     }
     
@@ -770,6 +772,25 @@ extension ALChannel {
         dict["unreadCount"] = self.unreadCount
         dict["metadata"] = self.metadata
         dict["userCount"] = self.userCount
+        return dict
+    }
+}
+
+extension ALRegistrationResponse {
+    func toDictionary() -> [String:Any] {
+        var dict : [String: Any] = [:]
+        dict["message"] = self.message ?? ""
+        dict["deviceKey"] = self.deviceKey ?? ""
+        dict["userKey"] = self.userKey ?? ""
+        dict["brokerURL"] = self.brokerURL ?? ""
+        dict["imageLink"] = self.imageLink ?? ""
+        dict["statusMessage"] = self.statusMessage ?? ""
+        dict["encryptionKey"] = self.encryptionKey ?? ""
+        dict["pricingPackage"] = self.pricingPackage 
+        dict["displayName"] = self.displayName ?? ""
+        dict["roleType"] = self.roleType
+        dict["userEncryptionKey"] = self.userEncryptionKey ?? ""
+        dict["authToken"] = self.authToken
         return dict
     }
 }
