@@ -1,3 +1,6 @@
+# React Native Kommunicate Chat v2.3.6
+- Fixed camera and video attachment visiblity from applogics json (Android)
+- Remove font-awesome font (Android)
 # React Native Kommunicate Chat v2.3.5
 - Added 5 Star CSAT Rating UI. (Android - iOS)
 - Fixed Minor Bugs. (Android - iOS)
