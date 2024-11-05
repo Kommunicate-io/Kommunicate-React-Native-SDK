@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.3.7
+- Fixed message metadata bug (Android)
 # React Native Kommunicate Chat v2.3.6
 - Fixed camera and video attachment visiblity from applogics json (Android)
 - Remove font-awesome font (Android)
