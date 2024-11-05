@@ -69,6 +69,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     private static final String CONVERSATION_ID = "conversationId";
     private static final String CLIENT_CONVERSATION_ID = "clientConversationId";
     private static final String CONVERSATION_ASSIGNEE = "conversationAssignee";
+    private static final String MESSAGE_METADATA = "messageMetadata";
     private static final String TEAM_ID = "teamId";
     private static final String CONVERSATION_INFO = "conversationInfo";
     private static final String LANGUAGES = "languages";
@@ -254,6 +255,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             KMUser user = null;
             Map<String, String> conversationInfo = null;
             Map<String, Object> dataMap = jsonObject.toHashMap();
+            Map<String, String> messageMetadata = null;
 
             if (jsonObject.hasKey(KM_USER)) {
                 user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString(KM_USER), KMUser.class);
@@ -264,6 +266,12 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 conversationInfo = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(CONVERSATION_INFO), Map.class);
                 dataMap.remove(CONVERSATION_INFO);
             }
+
+            if (jsonObject.hasKey(MESSAGE_METADATA)) {
+                messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
+                dataMap.remove(MESSAGE_METADATA);
+            }
+
             KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(dataMap, HashMap.class), KmConversationBuilder.class);
             conversationBuilder.setContext(currentActivity);
 
@@ -278,6 +286,9 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
             if (conversationInfo != null) {
                 conversationBuilder.setConversationInfo(conversationInfo);
+            }
+            if (messageMetadata != null) {
+                conversationBuilder.setMessageMetadata(messageMetadata);
             }
 
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
