@@ -34,6 +34,8 @@ RCT_EXTERN_METHOD (updateDefaultSetting: (NSDictionary<NSString *, id> * _Nonnul
 RCT_EXTERN_METHOD (fetchUnreadCount: (RCTResponseSenderBlock));
 RCT_EXTERN_METHOD (fetchConversationInformation : (NSDictionary<NSString *, id> * _Nonnull) data :(RCTResponseSenderBlock _Nonnull)callback);
 RCT_EXTERN_METHOD (fetchConversationAssigneeInfo : (NSDictionary<NSString *, id> * _Nonnull) data :(RCTResponseSenderBlock _Nonnull)callback);
+RCT_EXTERN_METHOD (sendMessage: (NSDictionary<NSString *, id> * _Nonnull) data :(RCTResponseSenderBlock _Nonnull)callback);
+
 
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

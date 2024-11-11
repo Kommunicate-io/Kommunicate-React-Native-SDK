@@ -100,6 +100,36 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
     
     @objc
+    func sendMessage(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        do {
+            let sendMessage = KMMessageBuilder()
+            if let conversationID = jsonObj["channelID"] as? String, !conversationID.isEmpty {
+                sendMessage.withConversationId(conversationID)
+            }
+            
+            if let message = jsonObj["message"] as? String, !message.isEmpty {
+                sendMessage.withText(message)
+            }
+            
+            if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
+                if let messageMetadataDict = try JSONSerialization.jsonObject(with: messageMetadataStr, options : .allowFragments) as? Dictionary<String,Any> {
+                    Kommunicate.defaultConfiguration.messageMetadata = messageMetadataDict
+                }
+            }
+            
+            Kommunicate.sendMessage(message: sendMessage.build()) { error in
+                guard error == nil else {
+                    callback(["Error", error?.localizedDescription ?? "There is error in sending Mesage to the shared channelID"])
+                    return
+                }
+                callback(["Success", "Message is sent successfully"])
+            }
+        } catch _ as NSError {
+            
+        }
+    }
+    
+    @objc
     func loginAsVisitor(_ appId: String, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         let kmUser = KMUser()
         kmUser.userId = Kommunicate.randomId()
