@@ -12,6 +12,7 @@ import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.listners.AlCallback;
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -289,6 +290,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
             if (messageMetadata != null) {
                 conversationBuilder.setMessageMetadata(messageMetadata);
+                ApplozicClient.getInstance(currentActivity).setMessageMetaData(messageMetadata);
             }
 
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {
