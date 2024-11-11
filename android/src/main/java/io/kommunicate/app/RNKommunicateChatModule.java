@@ -125,6 +125,37 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void sendMessage(final ReadableMap jsonObject, final Callback callback) {
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke("Activity is null");
+            return;
+        }
+
+        try {
+            MessageBuilder messageBuilder = new MessageBuilder(currentActivity);
+
+            if (jsonObject.hasKey("channelID")) {
+                messageBuilder.setClientGroupId(jsonObject.getString("channelID"));
+            }
+
+            if (jsonObject.hasKey("message")) {
+                messageBuilder.setMessage(jsonObject.getString("message"));
+            }
+
+            if (jsonObject.hasKey("messageMetadata")) {
+                Map<String, String> messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
+                messageBuilder.setMetadata(messageMetadata);
+            }
+
+            messageBuilder.send();
+            callback.invoke("Message sent successfully");
+        } catch (Exception e) {
+            callback.invoke("Error sending message: " + e.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void loginAsVisitor(final String applicationId, final Callback callback) {
         final Activity activity = getCurrentActivity();
         if (activity == null) {
