@@ -36,6 +36,7 @@ import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
+import com.applozic.mobicomkit.ApplozicClient;
 import io.kommunicate.KmConversationBuilder;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
 import java.util.HashMap;
