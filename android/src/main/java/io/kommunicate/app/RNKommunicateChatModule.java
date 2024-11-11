@@ -289,6 +289,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
             if (messageMetadata != null) {
                 conversationBuilder.setMessageMetadata(messageMetadata);
+                ApplozicClient.getInstance(currentActivity).setMessageMetaData(messageMetadata);
             }
 
             if (jsonObject.hasKey("createOnly") && jsonObject.getBoolean("createOnly")) {

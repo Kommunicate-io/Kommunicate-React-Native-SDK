@@ -10,5 +10,8 @@
     "react-native"
   ],
   "author": "codemonk@kommunicate.io",
-  "license": ""
+  "license": "",
+  "dependencies": {
+    "react-native": "^0.76.1"
+  }
 }
