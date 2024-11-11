@@ -149,9 +149,9 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
             }
 
             messageBuilder.send();
-            callback.invoke("Message sent successfully");
+            callback.invoke(SUCCESS,"Message sent successfully");
         } catch (Exception e) {
-            callback.invoke("Error sending message: " + e.getMessage());
+            callback.invoke(ERROR,"Error sending message: " + e.getMessage());
         }
     }
 
