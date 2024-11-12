@@ -103,13 +103,16 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     func sendMessage(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         do {
             let sendMessage = KMMessageBuilder()
-            if let conversationID = jsonObj["channelID"] as? String, !conversationID.isEmpty {
-                sendMessage.withConversationId(conversationID)
+            guard let conversationID = jsonObj["channelID"] as? String, !conversationID.isEmpty else {
+                callback(["Error", "channelID is required and cannot be empty"])
+                return
             }
-            
-            if let message = jsonObj["message"] as? String, !message.isEmpty {
-                sendMessage.withText(message)
+            guard let message = jsonObj["message"] as? String, !message.isEmpty else {
+                callback(["Error", "message is required and cannot be empty"])
+                return
             }
+            sendMessage.withConversationId(conversationID)
+            sendMessage.withText(message)
             
             if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
                 if let messageMetadataDict = try JSONSerialization.jsonObject(with: messageMetadataStr, options : .allowFragments) as? Dictionary<String,Any> {
@@ -124,8 +127,8 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
                 }
                 callback(["Success", "Message is sent successfully"])
             }
-        } catch _ as NSError {
-            
+        } catch let error as NSError {
+            callback(["Error", "Failed to process message metadata: \(error.localizedDescription)"])
         }
     }
     

@@ -128,30 +128,41 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     public void sendMessage(final ReadableMap jsonObject, final Callback callback) {
         Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
-            callback.invoke("Activity is null");
+            callback.invoke(ERROR, "Activity doesn't exist");
             return;
         }
 
         try {
+            if (!jsonObject.hasKey("channelID") || !jsonObject.hasKey("message")) {
+                callback.invoke(ERROR, "channelID and message are required parameters");
+                return;
+            }
+            String message = jsonObject.getString("message");
+            Map<String, String> messageMetadata = null;
+            if (TextUtils.isEmpty(message)) {
+                callback.invoke(ERROR, "message cannot be empty");
+                return;
+            }
+
             MessageBuilder messageBuilder = new MessageBuilder(currentActivity);
 
-            if (jsonObject.hasKey("channelID")) {
-                messageBuilder.setClientGroupId(jsonObject.getString("channelID"));
+            messageBuilder.setClientGroupId(jsonObject.getString("channelID"));
+            messageBuilder.setMessage(message);
+
+            if (jsonObject.hasKey(MESSAGE_METADATA)) {
+                messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
             }
 
-            if (jsonObject.hasKey("message")) {
-                messageBuilder.setMessage(jsonObject.getString("message"));
-            }
-
-            if (jsonObject.hasKey("messageMetadata")) {
-                Map<String, String> messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
+            if (messageMetadata != null) {
                 messageBuilder.setMetadata(messageMetadata);
             }
 
             messageBuilder.send();
             callback.invoke(SUCCESS,"Message sent successfully");
+        } catch (IllegalArgumentException e) {
+        callback.invoke(ERROR, "Invalid parameters: " + e.getMessage());
         } catch (Exception e) {
-            callback.invoke(ERROR,"Error sending message: " + e.getMessage());
+        callback.invoke(ERROR, "Error sending message: " + e.getMessage());
         }
     }
 
