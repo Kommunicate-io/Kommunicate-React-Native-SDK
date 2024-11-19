@@ -38,6 +38,8 @@ import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.KmConversationBuilder;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
+
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -56,6 +58,8 @@ import com.applozic.mobicomkit.api.conversation.AlTotalUnreadCountTask;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.api.conversation.MessageBuilder;
+import com.google.gson.JsonSyntaxException;
+
 import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.services.KmChannelService;
@@ -122,6 +126,65 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
             }
         });
+    }
+
+    @ReactMethod
+    public void sendMessage(final ReadableMap jsonObject, final Callback callback) {
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke(ERROR, "Activity doesn't exist");
+            return;
+        }
+        final WeakReference<Activity> activityRef = new WeakReference<>(currentActivity);
+
+        try {
+            if (!jsonObject.hasKey("channelID") || !jsonObject.hasKey("message")) {
+                callback.invoke(ERROR, "channelID and message are required parameters");
+                return;
+            }
+            String message = jsonObject.getString("message");
+            Map<String, String> messageMetadata = null;
+            if (TextUtils.isEmpty(message)) {
+                callback.invoke(ERROR, "message cannot be empty");
+                return;
+            }
+            String channelID = jsonObject.getString("channelID");
+            if (TextUtils.isEmpty(channelID)) {
+                callback.invoke(ERROR, "channelID cannot be empty");
+                return;
+            }
+            Activity activity = activityRef.get();
+            if (activity == null) {
+                callback.invoke(ERROR, "Activity no longer exists");
+                return;
+            }
+
+            MessageBuilder messageBuilder = new MessageBuilder(activity);
+            messageBuilder.setClientGroupId(channelID);
+            messageBuilder.setMessage(message);
+
+            if (jsonObject.hasKey(MESSAGE_METADATA)) {
+                try {
+                    messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
+                } catch (JsonSyntaxException e) {
+                    callback.invoke(ERROR, "Invalid messageMetadata format: " + e.getMessage());
+                    return;
+                }
+            }
+
+            if (messageMetadata != null) {
+                messageBuilder.setMetadata(messageMetadata);
+            }
+
+            messageBuilder.send();
+            callback.invoke(SUCCESS,"Message sent successfully");
+        } catch (IllegalArgumentException e) {
+            callback.invoke(ERROR, "Invalid parameters: " + e.getMessage());
+        } catch (JsonSyntaxException e) {
+            callback.invoke(ERROR, "Invalid messageMetadata format: " + e.getMessage());
+        } catch (Exception e) {
+            callback.invoke(ERROR, "Error sending message: " + e.getMessage());
+        }
     }
 
     @ReactMethod

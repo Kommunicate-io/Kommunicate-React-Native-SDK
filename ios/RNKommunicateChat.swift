@@ -100,6 +100,39 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
     
     @objc
+    func sendMessage(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
+        do {
+            let sendMessage = KMMessageBuilder()
+            guard let conversationID = jsonObj["channelID"] as? String, !conversationID.isEmpty else {
+                callback(["Error", "channelID is required and cannot be empty"])
+                return
+            }
+            guard let message = jsonObj["message"] as? String, !message.isEmpty else {
+                callback(["Error", "message is required and cannot be empty"])
+                return
+            }
+            sendMessage.withConversationId(conversationID)
+            sendMessage.withText(message)
+            
+            if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
+                if let messageMetadataDict = try JSONSerialization.jsonObject(with: messageMetadataStr, options : .allowFragments) as? Dictionary<String,Any> {
+                    Kommunicate.defaultConfiguration.messageMetadata = messageMetadataDict
+                }
+            }
+            
+            Kommunicate.sendMessage(message: sendMessage.build()) { error in
+                guard error == nil else {
+                    callback(["Error", error?.localizedDescription ?? "There is error in sending Mesage to the shared channelID"])
+                    return
+                }
+                callback(["Success", "Message is sent successfully"])
+            }
+        } catch let error as NSError {
+            callback(["Error", "Failed to process message metadata: \(error.localizedDescription)"])
+        }
+    }
+    
+    @objc
     func loginAsVisitor(_ appId: String, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         let kmUser = KMUser()
         kmUser.userId = Kommunicate.randomId()
