@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.3.8
+- Added the functionality to send message using code. 
 # React Native Kommunicate Chat v2.3.7
 - Fixed message metadata bug (Android)
 # React Native Kommunicate Chat v2.3.6
