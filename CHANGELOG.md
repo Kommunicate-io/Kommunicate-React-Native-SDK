@@ -1,12 +1,6 @@
 # React Native Kommunicate Chat v2.4.0
 - Disable SSL Pinning in Android and IOS by default.
 - Improved the CSAT 3 Star and 5 Star Ratings in Android
-# React Native Kommunicate Chat v2.3.11
-- Added the SQL Cipher in android side. (with gradle 7.4.0, wrapper 7.5.1)
-# React Native Kommunicate Chat v2.3.10
-- Added the SQL Cipher in android side. (with gradle 7.4.0)
-# React Native Kommunicate Chat v2.3.9
-- Added the SQL Cipher in android side. (with gradle 8.7.3)
 # React Native Kommunicate Chat v2.3.8
 - Added the functionality to send message using code. 
 # React Native Kommunicate Chat v2.3.7
