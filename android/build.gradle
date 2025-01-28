@@ -35,5 +35,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    api 'io.kommunicate.sdk:kommunicateui:2.12.0'
+    api 'io.kommunicate.sdk:kommunicateui:2.10.8'
 }
