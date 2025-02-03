@@ -19,9 +19,9 @@ For iOS, navigate to YourApp/ios directory from terminal and run the below comma
     pod install
     ```
 
->Note: Kommunicate requires min ios platform version 12 and uses dynamic frameworks. Make sure you have the below settings at the top of your Podfile:
+Note: Kommunicate requires a minimum iOS platform version of 13, uses dynamic frameworks, and requires New Architecture to be disabled. Ensure the following settings are added at the top of your Podfile:
  ```
- platform :ios, '12.0'
+ platform :ios, '13.0'
  use_frameworks!
  ```
 
