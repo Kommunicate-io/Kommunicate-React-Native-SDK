@@ -1,4 +1,4 @@
-# React Native Kommunicate Chat v2.4.0
+# React Native Kommunicate Chat v2.4.1
 - Added waiting queue in IOS
 - Fixed bugs in Android
 # React Native Kommunicate Chat v2.4.0
