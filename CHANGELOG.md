@@ -1,4 +1,7 @@
 # React Native Kommunicate Chat v2.4.0
+- Added waiting queue in IOS
+- Fixed bugs in Android
+# React Native Kommunicate Chat v2.4.0
 - Disable SSL Pinning in Android and IOS by default.
 - Improved the CSAT 3 Star and 5 Star Ratings in Android
 # React Native Kommunicate Chat v2.3.11
