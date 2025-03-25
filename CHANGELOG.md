@@ -1,3 +1,11 @@
+# React Native Kommunicate Chat v2.4.2
+- Internal Code Refactor for IOS.
+- Typing indicator For bot message delay for Android and IOS.
+- Updated TableView Update function for IOS.
+- Updated depricated Code and resolved Warnings for IOS.
+- Migration to Coroutines and removed Depricated Async Tasks for Android.
+- Remove Raw query querries usage for Android.
+- Added edge to edge support for Android 15 and Above.
 # React Native Kommunicate Chat v2.4.1
 - Added waiting queue in IOS
 - Fixed bugs in Android
