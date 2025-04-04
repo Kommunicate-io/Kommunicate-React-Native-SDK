@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.source_files  = "ios/*.{h,m,swift}"
   s.requires_arc = true
   s.dependency 'React'
-  s.dependency 'Kommunicate', '~> 7.2.8'
+  s.dependency 'Kommunicate', '~> 7.2.9'
 end
