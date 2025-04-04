@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.4.3
+- Fixed Recording button not working properly in iOS.
 # React Native Kommunicate Chat v2.4.2
 - Internal Code Refactor for IOS.
 - Typing indicator For bot message delay for Android and IOS.
