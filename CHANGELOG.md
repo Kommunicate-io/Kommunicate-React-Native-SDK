@@ -1,3 +1,9 @@
+# React Native Kommunicate Chat v2.5.0
+- [iOS] Added Business Hours feature.
+- [iOS] Disabled conversation restart when the restart button is hidden.
+- [iOS] Enabled form data persistence in local cache.
+- [iOS] Fixed character limit bug in Dialogflow bot.
+- [iOS] Resolved bug in Text Area component.
 # React Native Kommunicate Chat v2.4.3
 - Fixed Recording button not working properly in iOS.
 # React Native Kommunicate Chat v2.4.2

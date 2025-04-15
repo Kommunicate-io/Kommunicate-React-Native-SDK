@@ -604,7 +604,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     
     func updateUser (displayName: String?, imageLink : String?, status: String?, metadata: NSMutableDictionary?,phoneNumber: String?,email : String?, callback: RCTResponseSenderBlock!) {
         
-        let theUrlString = "\(ALUserDefaultsHandler.getBASEURL() as String)/rest/ws/user/update"
+        let theUrlString = "\(KMCoreUserDefaultsHandler.getBASEURL() as String)/rest/ws/user/update"
         
         let dictionary = NSMutableDictionary()
         if (displayName != nil) {
@@ -650,7 +650,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             }
             
             //Update the local contact
-            let alContact = ALContactDBService().loadContact(byKey: "userId", value: ALUserDefaultsHandler.getUserId())
+            let alContact = ALContactDBService().loadContact(byKey: "userId", value: KMCoreUserDefaultsHandler.getUserId())
             if alContact == nil {
                 callback(["Error", "User not found"])
                 return
