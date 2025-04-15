@@ -4,6 +4,11 @@
 - [iOS] Enabled form data persistence in local cache.
 - [iOS] Fixed character limit bug in Dialogflow bot.
 - [iOS] Resolved bug in Text Area component.
+- [Android] Persisted Data in Form Rich Message
+- [Android] Added download file listner
+- [Android] ReDirected URL from Help center to Browser.
+- [Android] Fixed dialogue flow crash
+- [Android] Removed restarted coversation from form button
 # React Native Kommunicate Chat v2.4.3
 - Fixed Recording button not working properly in iOS.
 # React Native Kommunicate Chat v2.4.2
