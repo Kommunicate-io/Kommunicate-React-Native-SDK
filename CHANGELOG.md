@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.5.1
+- [Android] Renamed the applozic references
 # React Native Kommunicate Chat v2.5.0
 - [iOS] Added Business Hours feature.
 - [iOS] Disabled conversation restart when the restart button is hidden.
