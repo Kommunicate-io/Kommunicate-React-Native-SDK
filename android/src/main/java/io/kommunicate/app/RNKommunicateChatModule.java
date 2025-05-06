@@ -28,6 +28,7 @@ import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.account.user.UserUpdateTask;
 import io.kommunicate.devkit.api.conversation.MessageBuilder;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
@@ -225,7 +226,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
         if (KMUser.isLoggedIn(currentActivity)) {
             KMUser user = (KMUser) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(config.toHashMap(), HashMap.class), KMUser.class);
-            new UserUpdateUseCase.executeWithExecutor(currentActivity, user, false, new ResultCallback() {
+            new UserUpdateTask(currentActivity, user, new ResultCallback() {
                 @Override
                 public void onSuccess(Object message) {
                     callback.invoke(SUCCESS, "User details updated");
