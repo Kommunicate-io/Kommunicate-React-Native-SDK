@@ -225,7 +225,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
         if (KMUser.isLoggedIn(currentActivity)) {
             KMUser user = (KMUser) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(config.toHashMap(), HashMap.class), KMUser.class);
-            new UserUpdateUseCase.executeWithExecutor(currentActivity, user, new ResultCallback() {
+            new UserUpdateUseCase.executeWithExecutor(currentActivity, user, false, new ResultCallback() {
                 @Override
                 public void onSuccess(Object message) {
                     callback.invoke(SUCCESS, "User details updated");
