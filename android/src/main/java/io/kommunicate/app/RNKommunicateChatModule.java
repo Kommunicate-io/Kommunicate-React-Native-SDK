@@ -22,6 +22,7 @@ import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
+import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
@@ -224,7 +225,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
         if (KMUser.isLoggedIn(currentActivity)) {
             KMUser user = (KMUser) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(config.toHashMap(), HashMap.class), KMUser.class);
-            new UserUpdateUseCase.Companion.executeWithExecutor(currentActivity, user, new ResultCallback() {
+            new UserUpdateUseCase.executeWithExecutor(currentActivity, user, new ResultCallback() {
                 @Override
                 public void onSuccess(Object message) {
                     callback.invoke(SUCCESS, "User details updated");
