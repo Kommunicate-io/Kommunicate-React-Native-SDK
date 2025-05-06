@@ -5,16 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.os.AsyncTask;
 
-
-
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.AlUserUpdateTask;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.listners.AlCallback;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -23,9 +13,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
@@ -35,35 +22,29 @@ import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.contact.Contact;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.conversation.MessageBuilder;
+import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.contact.AppContactService;
+import io.kommunicate.devkit.listners.ResultCallback;
+import io.kommunicate.usecase.UserUpdateUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.KmConversationBuilder;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import android.os.AsyncTask;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.async.KmConversationInfoTask;
 
-
-
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
-import com.applozic.mobicomkit.api.conversation.AlTotalUnreadCountTask;
-import io.kommunicate.preference.KmConversationInfoSetting;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.api.conversation.MessageBuilder;
 import com.google.gson.JsonSyntaxException;
-
-import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.callbacks.KmGetConversationInfoCallback;
-import io.kommunicate.services.KmChannelService;
-
 
 
 public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
@@ -243,7 +224,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
 
         if (KMUser.isLoggedIn(currentActivity)) {
             KMUser user = (KMUser) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(config.toHashMap(), HashMap.class), KMUser.class);
-            new AlUserUpdateTask(currentActivity, user, new AlCallback() {
+            new UserUpdateUseCase.Companion.executeWithExecutor(currentActivity, user, new ResultCallback() {
                 @Override
                 public void onSuccess(Object message) {
                     callback.invoke(SUCCESS, "User details updated");

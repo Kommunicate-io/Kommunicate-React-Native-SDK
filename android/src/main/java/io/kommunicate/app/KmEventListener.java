@@ -1,10 +1,11 @@
 package io.kommunicate.app;
 
-import com.applozic.mobicomkit.broadcast.AlEventManager;
 import io.kommunicate.callbacks.KmPluginEventListener;
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.broadcast.EventManager;
+
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.applozic.mobicommons.json.GsonUtils;
 import org.json.JSONObject;
 import org.json.JSONException;
 import androidx.annotation.Nullable;
@@ -13,19 +14,16 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 import com.google.gson.Gson;
 
-
-
-
 public class KmEventListener implements KmPluginEventListener {
     private ReactApplicationContext reactContext;
 
    public void register(ReactApplicationContext reactContext) {
         this.reactContext = reactContext;
-        AlEventManager.getInstance().registerPluginEventListener(this);
+        EventManager.getInstance().registerPluginEventListener(this);
     }
 
     public void unregister() {
-        AlEventManager.getInstance().unregisterPluginEventListener();
+        EventManager.getInstance().unregisterPluginEventListener();
     }
 
     private void sendEvent(String eventName, String value) {
