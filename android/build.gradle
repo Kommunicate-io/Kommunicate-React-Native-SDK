@@ -1,15 +1,20 @@
 buildscript {
     repositories {
+        google()
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'com.android.tools.build:gradle:7.4.2' // Update this
     }
 }
 
 apply plugin: 'com.android.library'
 rootProject.allprojects {
     repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
@@ -35,5 +40,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    api 'io.kommunicate.sdk:kommunicateui:2.13.3'
+    api 'io.kommunicate.sdk:kommunicateui:2.14.0'
 }
