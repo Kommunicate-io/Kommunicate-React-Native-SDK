@@ -1,3 +1,7 @@
+# React Native Kommuncaite Chat v2.5.2
+- [Android] Minor Bug Fix.
+- [Android] Real Time Status Update Flow Improved.
+- [Android] Suspended Screen Will have Clarity.
 # React Native Kommunicate Chat v2.5.1
 - [Android] Renamed the applozic references
 # React Native Kommunicate Chat v2.5.0
