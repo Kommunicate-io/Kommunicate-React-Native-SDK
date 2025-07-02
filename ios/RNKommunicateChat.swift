@@ -13,7 +13,7 @@ import KommunicateCore_iOS_SDK
 import React
 
 @objc (RNKommunicateChat)
-class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, ALKCustomEventCallback {
+class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, KMChatCustomEventCallback {
     public static var emitter: RCTEventEmitter!
     
      override init() {
@@ -401,7 +401,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     @objc
     func updateTeamId(_ teamData: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
         let metadata = NSMutableDictionary(
-            dictionary: ALChannelService().metadataToHideActionMessagesAndTurnOffNotifications())
+            dictionary: KMCoreChannelService().metadataToHideActionMessagesAndTurnOffNotifications())
         
         guard let teamID = teamData["teamId"] as? String, let groupID = teamData["clientConversationId"] as? String else { return }
         
@@ -409,14 +409,14 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             metadata.setValue(teamID, forKey: "KM_TEAM_ID")
         }
         if Int(groupID) != nil {
-            ALChannelService().updateChannelMetaData(NSNumber(value: Int(groupID)!), orClientChannelKey: nil , metadata: metadata) { error in
+            KMCoreChannelService().updateChannelMetaData(NSNumber(value: Int(groupID)!), orClientChannelKey: nil , metadata: metadata) { error in
                 guard error == nil else {
                     callback(["false", error.debugDescription])
                     return
                 }
             }
         }
-        ALChannelService().updateChannelMetaData(nil, orClientChannelKey: groupID , metadata: metadata) { error in
+        KMCoreChannelService().updateChannelMetaData(nil, orClientChannelKey: groupID , metadata: metadata) { error in
             guard error == nil else {
                 callback(["false", error.debugDescription])
                 return
@@ -488,13 +488,13 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
 
     @objc
     func fetchConversationInformation(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) -> Void {
-        let alChannelService = ALChannelService()
+        let kmCoreChannelService = KMCoreChannelService()
         if let conversationID = data["conversationID"] as? String {
             guard let channelID = Int(conversationID) as? Int else {
                 callback(["Error", "conversationID is not Integer"])
                 return
             }
-            alChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
+            kmCoreChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
                 guard let channel = channel else {
                     callback(["Error", "Conversation Not Found"])
                     return
@@ -507,7 +507,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
                 return
             }
 
-            alChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
+            kmCoreChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
                 guard let channel = channel else {
                     callback(["Error", "Conversation Not Found"])
                     return
@@ -521,13 +521,13 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     
     @objc
     func fetchConversationAssigneeInfo(_ data: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock) {
-        let alChannelService = ALChannelService()
+        let kmCoreChannelService = KMCoreChannelService()
         if let conversationID = data["conversationID"] as? String {
             guard let channelID = Int(conversationID) as? Int else {
                 callback(["Error", "conversationID is not Integer"])
                 return
             }
-            alChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
+            kmCoreChannelService.getChannelInformation(NSNumber(integerLiteral: channelID), orClientChannelKey: nil) { channel in
                 guard let channel = channel else {
                     callback(["Error", "Channel Not Found"])
                     return
@@ -548,7 +548,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
                 return
             }
 
-            alChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
+            kmCoreChannelService.getChannelInformation(nil, orClientChannelKey: clientChannelKey) { channel in
                 guard let channel = channel else {
                     callback(["Error", "Conversation Not Found"])
                     return
@@ -679,23 +679,23 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     // Events
     
     open override func supportedEvents() -> [String]! {
-        return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted", "onConversationInfoClicked"]
+        return ["onMessageReceived", "onMessageSent", "onRichMessageButtonClick", "onStartNewConversation", "onSubmitRatingClick", "onBackButtonClicked", "onFaqClick", "onConversationRestarted", "onCurrentConversationOpened", "onAttachmentOptionClicked", "onVoiceButtonClicked", "onLocationButtonClicked", "onRateConversationEmotionClicked", "onCameraButtonClicked", "onVideoButtonClicked"]
     }
     
     open override func addListener(_ eventName: String!) {
-       Kommunicate.subscribeCustomEvents(events: [KMCustomEvent.messageReceive, KMCustomEvent.messageSend,KMCustomEvent.faqClick, KMCustomEvent.newConversation, KMCustomEvent.submitRatingClick, KMCustomEvent.restartConversationClick, KMCustomEvent.richMessageClick, KMCustomEvent.conversationBackPress, KMCustomEvent.conversationListBackPress, KMCustomEvent.conversationInfoClick ], callback: self)
+        Kommunicate.subscribeCustomEvents(callback: self)
     }
 
     open override func removeListeners(_ count: Double) {
         // TODO: call unsubscribe listeners function
      }
     
-    func messageSent(message: ALMessage) {
+    func messageSent(message: KMCoreMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
         KMEventEmitter.emitter.sendEvent(withName: "onMessageSent", body: ["data":convertDictToString(dict: messageDict)])
     }
     
-    func messageReceived(message: ALMessage) {
+    func messageReceived(message: KMCoreMessage) {
         guard let messageDict = message.dictionary() as? NSDictionary else { return }
         KMEventEmitter.emitter.sendEvent(withName: "onMessageReceived", body: ["data":convertDictToString(dict: messageDict)])
     }
@@ -746,6 +746,34 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
         KMEventEmitter.emitter.sendEvent(withName: "onConversationInfoClicked", body: nil)
     }
     
+    func currentOpenedConversation(conversationId: String) {
+        KMEventEmitter.emitter.sendEvent(withName: "onCurrentConversationOpened", body: ["data": conversationId])
+    }
+
+    func attachmentOptionClicked(attachemntType: String) {
+        KMEventEmitter.emitter.sendEvent(withName: "onAttachmentOptionClicked", body: ["data": attachemntType])
+    }
+
+    func voiceButtonClicked(currentState: KommunicateChatUI_iOS_SDK.KMVoiceRecordingState) {
+        KMEventEmitter.emitter.sendEvent(withName: "onVoiceButtonClicked", body: ["data": "\(currentState.rawValue)"])
+    }
+
+    func locationButtonClicked() {
+        KMEventEmitter.emitter.sendEvent(withName: "onLocationButtonClicked", body: nil)
+    }
+
+    func rateConversationEmotionsClicked(rating: Int) {
+        KMEventEmitter.emitter.sendEvent(withName: "onRateConversationEmotionClicked", body: ["data": rating])
+    }
+
+    func cameraButtonClicked() {
+        KMEventEmitter.emitter.sendEvent(withName: "onCameraButtonClicked", body: nil)
+    }
+
+    func videoButtonClicked() {
+        KMEventEmitter.emitter.sendEvent(withName: "onVideoButtonClicked", body: nil)
+    }
+
     func convertDictToString(dict: NSDictionary) -> String {
         guard let data =  try? JSONSerialization.data(withJSONObject: dict, options: []) else {
             return ""
@@ -792,7 +820,7 @@ extension ALContact {
     }
 }
 
-extension ALChannel {
+extension KMCoreChannel {
     func toDictionary() -> [String:Any] {
         var dict: [String: Any] = [:]
         dict["key"] = self.key
