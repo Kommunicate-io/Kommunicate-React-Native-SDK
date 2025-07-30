@@ -130,7 +130,7 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
 
             if let user = kmUser {
                 user.applicationId = appId
-                user.platform = NSNumber(value: PLATFORM_FLUTTER.rawValue)
+                user.platform =  7 // 7 is for React Native
             }
 
             // Set metadata if present

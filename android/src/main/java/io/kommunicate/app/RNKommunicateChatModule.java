@@ -243,12 +243,13 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 dataMap.remove("shouldMaintainSession");
             }
 
-            if (user.getApplicationId() != null) {
+            if (user != null && user.getApplicationId() != null) {
                 applicationId = user.getApplicationId();
             } else if (jsonObject.hasKey(APP_ID)) {
                 applicationId = (String) jsonObject.getString(APP_ID);
             } else {
                 callback.invoke(ERROR, "The object doesn't contain appId.");
+                return;
             }
 
             if (jsonObject.hasKey(CONVERSATION_INFO)) {
