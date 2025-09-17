@@ -23,7 +23,7 @@ public class KmEventListener implements KmPluginEventListener {
     }
 
     public void unregister() {
-        EventManager.getInstance().unregisterPluginEventListener();
+       EventManager.getInstance().unregisterPluginEventListener();
     }
 
     private void sendEvent(String eventName, String value) {
@@ -41,7 +41,7 @@ public class KmEventListener implements KmPluginEventListener {
 
     @Override
     public void onPluginDismiss() {
-        sendEvent("onPluginDismiss", "dismiss");
+       sendEvent("onPluginDismiss", "dismiss");
     }
 
     @Override
@@ -108,12 +108,12 @@ public class KmEventListener implements KmPluginEventListener {
 
     @Override
     public void onFaqClick(String FaqUrl) {
-        sendEvent("onFaqClick", FaqUrl);
+       sendEvent("onFaqClick", FaqUrl);
     }
 
     @Override
     public void onLocationClick() {
-        sendEvent("onLocationClick", "clicked");
+       sendEvent("onLocationClick", "clicked");
     }
 
     @Override
@@ -123,17 +123,22 @@ public class KmEventListener implements KmPluginEventListener {
 
     @Override
     public void onVoiceButtonClick(String action){
-        sendEvent("onVoiceButtonClick", action);
+       sendEvent("onVoiceButtonClick", action);
     }
 
     @Override
-    public void onRatingEmoticonsClick(Integer ratingValue){
+    public void onRatingEmoticonsClick(Integer ratingValue) {
         sendEvent("onRatingEmoticonsClick", String.valueOf(ratingValue));
     }
 
     @Override
-    public void onRateConversationClick(){
-        sendEvent("onRateConversationClick", "clicked");
+    public void onRateConversationClick() {
+       sendEvent("onRateConversationClick", "clicked");
+    }
+
+    @Override
+    public void onCurrentOpenedConversation(Integer conversationId) {
+        sendEvent("onCurrentConversationOpened", String.valueOf(conversationId));
     }
 
 }

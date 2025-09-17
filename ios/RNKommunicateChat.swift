@@ -12,7 +12,7 @@ import KommunicateChatUI_iOS_SDK
 import KommunicateCore_iOS_SDK
 import React
 
-@objc (RNKommunicateChat)
+@objc(RNKommunicateChat)
 class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, KMChatCustomEventCallback {
     public static var emitter: RCTEventEmitter!
     
@@ -97,6 +97,104 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             }
             callback(["Success", response as Any])
         })
+    }
+    
+    @objc
+    func launchConversationWithUser(_ jsonObj: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock)-> Void {
+        do {
+            // Extract values with defaults
+            let appId = jsonObj["appId"] as? String
+            let shouldMaintainSession = jsonObj["shouldMaintainSession"] as? Bool ?? true
+            let isSingleConversation = jsonObj["isSingleConversation"] as? Bool ?? true
+            let createOnly = jsonObj["createOnly"] as? Bool ?? false
+            let conversationAssignee = jsonObj["conversationAssignee"] as? String
+            let clientConversationId = jsonObj["clientConversationId"] as? String
+            let teamId = jsonObj["teamId"] as? String
+            let conversationTitle = jsonObj["conversationTitle"] as? String
+            let agentIds = jsonObj["agentIds"] as? [String]
+            let botIds = jsonObj["botIds"] as? [String]
+            let messageMetadata = jsonObj["messageMetadata"] as? [String: Any]
+            let conversationInfo = jsonObj["conversationInfo"].map {
+                [RNKommunicateChat.KM_CONVERSATION_METADATA: $0]
+            }
+
+            // Prepare KMUser if provided
+            var kmUser: KMUser?
+
+            if let kmUserEncoded = jsonObj["kmUser"] as? String {
+                let decodedStr = kmUserEncoded.replacingOccurrences(of: "\\\"", with: "\"")
+                kmUser = KMUser(jsonString: decodedStr)
+            } else if let kmUserDict = jsonObj["kmUser"] as? [String: Any] {
+                kmUser = parseKMUser(from: kmUserDict)
+            }
+
+            if let user = kmUser {
+                user.applicationId = appId
+                user.platform =  7 // 7 is for React Native
+            }
+
+            // Set metadata if present
+            if let metadata = messageMetadata {
+                Kommunicate.defaultConfiguration.messageMetadata = metadata
+            }
+
+            // Build the conversation
+            let builder = KMConversationBuilder()
+                .useLastConversation(isSingleConversation)
+
+            if let agents = agentIds, !agents.isEmpty {
+                builder.withAgentIds(agents)
+            }
+
+            if let bots = botIds, !bots.isEmpty {
+                builder.withBotIds(bots)
+            }
+
+            if let assignee = conversationAssignee {
+                builder.withConversationAssignee(assignee)
+            }
+
+            if let clientId = clientConversationId {
+                builder.withClientConversationId(clientId)
+            }
+
+            if let team = teamId {
+                builder.withTeamId(team)
+            }
+
+            if let title = conversationTitle {
+                builder.withConversationTitle(title)
+            }
+
+            if let info = conversationInfo {
+                builder.withMetaData(info)
+            }
+
+            // Launch conversation on main thread
+            DispatchQueue.main.async {
+                guard let topVC = UIApplication.topViewController() else {
+                    callback(["Error", "Error getting ViewController"])
+                    return
+                }
+
+                Kommunicate.launchConversationWithUser(
+                    appID: appId,
+                    kmUser: kmUser,
+                    from: topVC,
+                    conversation: builder.build(),
+                    shouldMaintainSession: shouldMaintainSession
+                ) { response in
+                    switch response {
+                    case .success(let conversationID):
+                        callback(["Success", conversationID])
+                    case .failure(let error):
+                        callback(["Error", "Error launching conversation: \(error)"])
+                    }
+                }
+            }
+        } catch let error as NSError {
+            callback(["Error", "Failed to process object: \(error.localizedDescription)"])
+        }
     }
     
     @objc
@@ -751,27 +849,27 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
 
     func attachmentOptionClicked(attachemntType: String) {
-        KMEventEmitter.emitter.sendEvent(withName: "onAttachmentOptionClicked", body: ["data": attachemntType])
+        KMEventEmitter.emitter.sendEvent(withName: "onAttachmentClick", body: ["data": attachemntType])
     }
 
     func voiceButtonClicked(currentState: KommunicateChatUI_iOS_SDK.KMVoiceRecordingState) {
-        KMEventEmitter.emitter.sendEvent(withName: "onVoiceButtonClicked", body: ["data": "\(currentState.rawValue)"])
+        KMEventEmitter.emitter.sendEvent(withName: "onVoiceButtonClick", body: ["data": "\(currentState.rawValue)"])
     }
 
     func locationButtonClicked() {
-        KMEventEmitter.emitter.sendEvent(withName: "onLocationButtonClicked", body: nil)
+        KMEventEmitter.emitter.sendEvent(withName: "onLocationClick", body: nil)
     }
 
     func rateConversationEmotionsClicked(rating: Int) {
-        KMEventEmitter.emitter.sendEvent(withName: "onRateConversationEmotionClicked", body: ["data": rating])
+        KMEventEmitter.emitter.sendEvent(withName: "onRatingEmoticonsClick", body: ["data": rating])
     }
 
     func cameraButtonClicked() {
-        KMEventEmitter.emitter.sendEvent(withName: "onCameraButtonClicked", body: nil)
+        KMEventEmitter.emitter.sendEvent(withName: "onCameraClicked", body: nil)
     }
 
     func videoButtonClicked() {
-        KMEventEmitter.emitter.sendEvent(withName: "onVideoButtonClicked", body: nil)
+        KMEventEmitter.emitter.sendEvent(withName: "onVideoClicked", body: nil)
     }
 
     func convertDictToString(dict: NSDictionary) -> String {
@@ -779,6 +877,90 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             return ""
         }
         return String(data:data, encoding:.utf8) ?? ""
+    }
+    
+    func parseKMUser(from dictionary: [String: Any]) -> KMUser {
+        let user = KMUser()
+
+        user.userId = dictionary["userId"] as? String
+        user.email = dictionary["email"] as? String
+        user.password = dictionary["password"] as? String
+        user.displayName = dictionary["displayName"] as? String
+        user.registrationId = dictionary["registrationId"] as? String
+        user.applicationId = dictionary["applicationId"] as? String
+        user.contactNumber = dictionary["contactNumber"] as? String
+        user.countryCode = dictionary["countryCode"] as? String
+
+        if let prefAPI = dictionary["prefContactAPI"] as? Int16 {
+            user.prefContactAPI = prefAPI
+        }
+
+        if let verified = dictionary["emailVerified"] as? Bool {
+            user.emailVerified = verified
+        }
+
+        user.timezone = dictionary["timezone"] as? String
+
+        if let versionCode = dictionary["appVersionCode"] as? Int16 {
+            user.appVersionCode = versionCode
+        }
+
+        user.roleName = dictionary["roleName"] as? String
+
+        if let deviceType = dictionary["deviceType"] as? Int16 {
+            user.deviceType = deviceType
+        }
+
+        user.imageLink = dictionary["imageLink"] as? String
+        user.appModuleName = dictionary["appModuleName"] as? String
+
+        if let userTypeId = dictionary["userTypeId"] as? Int16 {
+            user.userTypeId = userTypeId
+        }
+
+        if let notifMode = dictionary["notificationMode"] as? Int16 {
+            user.notificationMode = notifMode
+        }
+
+        if let authId = dictionary["authenticationTypeId"] as? Int16 {
+            user.authenticationTypeId = authId
+        }
+
+        if let unreadType = dictionary["unreadCountType"] as? Int16 {
+            user.unreadCountType = unreadType
+        }
+
+        if let apnsType = dictionary["deviceApnsType"] as? Int16 {
+            user.deviceApnsType = apnsType
+        }
+
+        if let pushFormat = dictionary["pushNotificationFormat"] as? Int16 {
+            user.pushNotificationFormat = pushFormat
+        }
+
+        if let encryption = dictionary["enableEncryption"] as? Bool {
+            user.enableEncryption = encryption
+        }
+
+        if let contactType = dictionary["contactType"] as? NSNumber {
+            user.contactType = contactType
+        }
+
+        if let features = dictionary["features"] as? [Any] {
+            user.features = NSMutableArray(array: features)
+        }
+
+        user.notificationSoundFileName = dictionary["notificationSoundFileName"] as? String
+
+        if let metadata = dictionary["metadata"] as? [String: Any] {
+            user.metadata = NSMutableDictionary(dictionary: metadata)
+        }
+
+        if let platform = dictionary["platform"] as? NSNumber {
+            user.platform = platform
+        }
+
+        return user
     }
 
     @objc

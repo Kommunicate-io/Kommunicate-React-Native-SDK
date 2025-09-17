@@ -59,6 +59,7 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     private static final String MESSAGE_METADATA = "messageMetadata";
     private static final String TEAM_ID = "teamId";
     private static final String CONVERSATION_INFO = "conversationInfo";
+    private static final String APP_ID = "appId";
     private static final String LANGUAGES = "languages";
     private static final String KM_USER = "kmUser";
     private KmEventListener kmEventListener;
@@ -214,6 +215,93 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
                 callback.invoke(ERROR, registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception != null ? exception.getMessage() : null);
             }
         });
+    }
+
+    @ReactMethod
+    public void launchConversationWithUser(final ReadableMap jsonObject, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke(ERROR, "Activity doesn't exist");
+            return;
+        }
+
+        try {
+            KMUser user = null;
+            Map<String, String> conversationInfo = null;
+            Map<String, Object> dataMap = jsonObject.toHashMap();
+            Map<String, String> messageMetadata = null;
+            String applicationId = null;
+            boolean shouldMaintainSession = true;
+
+            if (jsonObject.hasKey(KM_USER)) {
+                user = (KMUser) GsonUtils.getObjectFromJson(jsonObject.getString(KM_USER), KMUser.class);
+                dataMap.remove(KM_USER);
+            }
+
+            if (jsonObject.hasKey("shouldMaintainSession")) {
+                shouldMaintainSession = jsonObject.getBoolean("shouldMaintainSession");
+                dataMap.remove("shouldMaintainSession");
+            }
+
+            if (user != null && user.getApplicationId() != null) {
+                applicationId = user.getApplicationId();
+            } else if (jsonObject.hasKey(APP_ID)) {
+                applicationId = (String) jsonObject.getString(APP_ID);
+            } else {
+                callback.invoke(ERROR, "The object doesn't contain appId.");
+                return;
+            }
+
+            if (jsonObject.hasKey(CONVERSATION_INFO)) {
+                conversationInfo = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(CONVERSATION_INFO), Map.class);
+                dataMap.remove(CONVERSATION_INFO);
+            }
+
+            if (jsonObject.hasKey(MESSAGE_METADATA)) {
+                messageMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(jsonObject.getString(MESSAGE_METADATA), Map.class);
+                dataMap.remove(MESSAGE_METADATA);
+            }
+
+            KmConversationBuilder conversationBuilder = (KmConversationBuilder) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(dataMap, HashMap.class), KmConversationBuilder.class);
+            conversationBuilder.setContext(currentActivity);
+
+            if (!jsonObject.hasKey("isSingleConversation")) {
+                conversationBuilder.setSingleConversation(true);
+            }
+            if (!jsonObject.hasKey("skipConversationList")) {
+                conversationBuilder.setSkipConversationList(true);
+            }
+            if (user != null) {
+                conversationBuilder.setKmUser(user);
+            }
+            if (conversationInfo != null) {
+                conversationBuilder.setConversationInfo(conversationInfo);
+            }
+            if (messageMetadata != null) {
+                conversationBuilder.setMessageMetadata(messageMetadata);
+            }
+            // Launch Kommunicate conversation
+            Kommunicate.launchConversationWithUser(
+                    currentActivity,
+                    applicationId,
+                    user,
+                    conversationBuilder,
+                    shouldMaintainSession,
+                    new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            callback.invoke(SUCCESS, message != null ? ChannelService.getInstance(currentActivity).getChannelByChannelKey((Integer) message).getClientGroupId()  : "Success");
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            callback.invoke(ERROR, error != null ? error.toString() : "Unknown error occurred");
+                        }
+                    }
+            );
+        } catch (Exception e) {
+            callback.invoke(ERROR, e.toString());
+        }
     }
 
     @ReactMethod
