@@ -1,4 +1,11 @@
 # React Native Kommunicate Chat v2.5.2
+- [Android] Minor Bug Fix.
+- [Android] SQLCipher and Sentry Library Update for 16kb Page Size Support.
+- [Android] Business Hours null appID Crash Fix.
+- [iOS] Added New Customisation for Form.
+- [iOS] Updated API For User Status Update.
+- [iOS] Minor Bug Fix.
+# React Native Kommunicate Chat v2.5.2
 - [Android] Minor Bug Fix
 - [Android] Real-Time Status Update Flow Improved
 - [Android] Suspended screen clarity enhanced

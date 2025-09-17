@@ -44,6 +44,18 @@ Open `Info.plist` from `/ios/YOUR_PROJECT_NAME/Info.plist` file and paste these 
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>Allow write access</string>
 ```
+## ProGuard rules
+
+Add these proguard rules in the proguard-rules.pro file. If you skip this step then your app might crash in the the release build if minify enable is set to true.
+
+```
+-keep class net.sqlcipher.** { *; }
+-keep class javax.crypto.** { *; }
+-keep class net.zetetic.database.sqlcipher.* { *; }
+-keep class net.zetetic.database.sqlcipher.** { *; }
+-keepattributes *Annotation*
+```
+
 ## Import the module
 
 You can use the module by importing it in your react native files as below:
