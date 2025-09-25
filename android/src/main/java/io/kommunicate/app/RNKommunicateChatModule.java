@@ -86,6 +86,22 @@ public class RNKommunicateChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void initialize(final String applicationId, final Callback callback) {
+        final Activity currentActivity = getCurrentActivity();
+        if (currentActivity == null) {
+            callback.invoke(ERROR, "Activity doesn't exist");
+            return;
+        }
+
+        if (applicationId != null && !TextUtils.isEmpty(applicationId)) {
+            Kommunicate.init(currentActivity, applicationId);
+            callback.invoke(SUCCESS, "Initialized successfully");
+        } else {
+            callback.invoke(ERROR, "applicationId cannot be null or empty");
+        }
+    }
+
+    @ReactMethod
     public void loginUser(final ReadableMap config, final Callback callback) {
         final Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
