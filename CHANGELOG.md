@@ -1,4 +1,7 @@
-# React Native Kommunicate Chat v2.5.2
+# React Native Kommunicate Chat v2.5.4
+- Added a initialization function. (This is required to call everytime after opening the app.)
+- [Android] Fixed Runtime Exception Bug
+# React Native Kommunicate Chat v2.5.3
 - [Android] Minor Bug Fix.
 - [Android] SQLCipher and Sentry Library Update for 16kb Page Size Support.
 - [Android] Business Hours null appID Crash Fix.
