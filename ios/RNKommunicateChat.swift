@@ -48,6 +48,18 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
     }
     
     @objc
+    func initialize(_ appId: String, _ callback: RCTResponseSenderBlock) -> Void {
+        let trimmedAppId = appId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedAppId.isEmpty else {
+            callback(["Error", "appId cannot be empty"])
+            return
+        }
+
+        Kommunicate.setup(applicationId: trimmedAppId)
+        callback(["Success", "Successfully initialized"])
+    }
+
+    @objc
     func loginUser(_ user: Dictionary<String, Any>, _ callback: @escaping RCTResponseSenderBlock)-> Void{
         let kmUser = KMUser()
         
