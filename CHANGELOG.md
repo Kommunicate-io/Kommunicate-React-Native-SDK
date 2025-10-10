@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.5.5
+- [Android] Fixed Runtime Exception Bug. Added proactive checks to avoid NPE.
 # React Native Kommunicate Chat v2.5.4
 - Added an initialization function. (This is required to call everytime after opening the app.)
 - [Android] Fixed Runtime Exception Bug.
