@@ -1,3 +1,6 @@
+# React Native Kommunicate Chat v2.5.6
+- [iOS] Fixed the glass effect bug with iOS 26 versions.
+- [iOS] Fixed dark icon issue with iOS 26 versions.
 # React Native Kommunicate Chat v2.5.5
 - [Android] Fixed Runtime Exception Bug. Added proactive checks to avoid NPE.
 # React Native Kommunicate Chat v2.5.4
