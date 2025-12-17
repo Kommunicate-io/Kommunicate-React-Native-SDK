@@ -1,3 +1,6 @@
+# React Native Kommunicate Chat v2.5.7
+- [Android] Fixed assignee names do not update if clientConversationId is set in buildConversation.
+- [iOS] Fixed SPM Build Issue.
 # React Native Kommunicate Chat v2.5.6
 - [iOS] Fixed the glass effect bug with iOS 26 versions.
 - [iOS] Fixed dark icon issue with iOS 26 versions.
