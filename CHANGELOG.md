@@ -1,4 +1,4 @@
-# React Native Kommunicate Chat v2.5.6
+# React Native Kommunicate Chat v2.5.7
 - [Android] Fixed Assignee names are not updating if clientConversationId is set in buildConversation.
 - [iOS] Fixed SPM Build Issue.
 # React Native Kommunicate Chat v2.5.6
