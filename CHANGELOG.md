@@ -1,4 +1,4 @@
-# React Native Kommunicate Chat v2.3.11.1
+# React Native Kommunicate Chat v2.3.12
 - [Android] Crash Fix patch for v2.3.11
 # React Native Kommunicate Chat v2.5.7
 - [Android] Fixed assignee names do not update if clientConversationId is set in buildConversation.
