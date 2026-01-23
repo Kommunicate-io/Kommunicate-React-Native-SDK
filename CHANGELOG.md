@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.3.13
+- [Android] Crash Fix patch for v2.3.11
 # React Native Kommunicate Chat v2.4.0
 - Disable SSL Pinning in Android and IOS by default.
 - Improved the CSAT 3 Star and 5 Star Ratings in Android
