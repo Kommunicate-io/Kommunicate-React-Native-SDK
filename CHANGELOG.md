@@ -1,3 +1,5 @@
+# React Native Kommunicate Chat v2.5.9
+- [Android] Location sharing optimizations
 # React Native Kommunicate Chat v2.5.8
 - [Android] Crash Fix patch for v2.3.11- Merge to main version
 # React Native Kommunicate Chat v2.5.7
