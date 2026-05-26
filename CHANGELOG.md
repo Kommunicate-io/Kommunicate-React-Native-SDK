@@ -1,3 +1,11 @@
+# React Native Kommunicate Chat v2.6.1
+## Android 
+- Settings to hide FAQ status bar  
+- Kommunicate Android SDK version update to 2.16.1
+## iOS
+- List Template UI fixes
+- Kommunicate iOS SDK version update to 7.3.5
+
 # React Native Kommunicate Chat v2.6.0
 ## Android 
 - Markdown format support in messages
