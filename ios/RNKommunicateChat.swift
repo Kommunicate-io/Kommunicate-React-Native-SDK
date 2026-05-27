@@ -223,14 +223,16 @@ class RNKommunicateChat : RCTEventEmitter, KMPreChatFormViewControllerDelegate, 
             }
             sendMessage.withConversationId(conversationID)
             sendMessage.withText(message)
-            
+
+            let kmMessage = sendMessage.build()
+
             if let messageMetadataStr = (jsonObj["messageMetadata"] as? String)?.data(using: .utf8) {
                 if let messageMetadataDict = try JSONSerialization.jsonObject(with: messageMetadataStr, options : .allowFragments) as? Dictionary<String,Any> {
-                    Kommunicate.defaultConfiguration.messageMetadata = messageMetadataDict
+                    kmMessage.metadata = messageMetadataDict
                 }
             }
-            
-            Kommunicate.sendMessage(message: sendMessage.build()) { error in
+
+            Kommunicate.sendMessage(message: kmMessage) { error in
                 guard error == nil else {
                     callback(["Error", error?.localizedDescription ?? "There is error in sending Mesage to the shared channelID"])
                     return
