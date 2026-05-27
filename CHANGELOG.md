@@ -3,6 +3,7 @@
 - Settings to hide FAQ status bar  
 - Kommunicate Android SDK version update to 2.16.1
 ## iOS
+- Fixed `sendMessage` not attaching `messageMetadata` to the outgoing message payload (requires Kommunicate iOS SDK with `KMMessage.metadata` support in `toKMCoreMessage`)
 - List template UI fixes
 - Kommunicate iOS SDK version update to 7.3.5
 
