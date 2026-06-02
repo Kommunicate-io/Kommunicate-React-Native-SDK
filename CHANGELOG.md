@@ -1,3 +1,7 @@
+# React Native Kommunicate Chat v2.6.2
+## iOS 
+- Message Metadata fix
+
 # React Native Kommunicate Chat v2.6.1
 ## Android 
 - Settings to hide FAQ status bar  
