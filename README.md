@@ -8,18 +8,14 @@ To add the Kommunicate module to you react native application, add it using npm:
 npm install react-native-kommunicate-chat --save
 ```
 
-Then link the module:
-
-```
-react-native link react-native-kommunicate-chat
-```
+React Native 0.60 and later supports automatic native-module linking, so no manual `react-native link` command is required.
 
 For iOS, navigate to YourApp/ios directory from terminal and run the below command:
     ```
     pod install
     ```
 
-Note: Kommunicate requires a minimum iOS platform version of 13, uses dynamic frameworks, and requires New Architecture to be disabled. Ensure the following settings are added at the top of your Podfile:
+Note: Kommunicate requires a minimum iOS platform version of 13 and uses dynamic frameworks. Ensure the following settings are added at the top of your Podfile:
  ```
  platform :ios, '13.0'
  use_frameworks!
