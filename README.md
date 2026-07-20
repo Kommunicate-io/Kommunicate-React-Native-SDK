@@ -11,9 +11,9 @@ npm install react-native-kommunicate-chat --save
 React Native 0.60 and later supports automatic native-module linking, so no manual `react-native link` command is required.
 
 For iOS, navigate to YourApp/ios directory from terminal and run the below command:
-    ```
-    pod install
-    ```
+```bash
+pod install
+```
 
 Note: Kommunicate requires a minimum iOS platform version of 13 and uses dynamic frameworks. Ensure the following settings are added at the top of your Podfile:
  ```
