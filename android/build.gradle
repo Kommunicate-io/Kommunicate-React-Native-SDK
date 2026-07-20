@@ -1,4 +1,28 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+    }
+}
+
 apply plugin: 'com.android.library'
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+
+        maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+        }
+    }
+}
 
 android {
     namespace "io.kommunicate.app"
@@ -7,6 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 35
+        versionCode 1
+        versionName "1.0"
     }
 
     compileOptions {
@@ -14,9 +40,13 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    lint {
+    lintOptions {
         abortOnError false
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
