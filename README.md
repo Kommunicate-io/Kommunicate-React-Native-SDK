@@ -8,18 +8,48 @@ To add the Kommunicate module to you react native application, add it using npm:
 npm install react-native-kommunicate-chat --save
 ```
 
-Then link the module:
+## Android Maven repository
 
+Add the Kommunicate Maven repository to your application's `android/settings.gradle`.
+
+If the application already has a `dependencyResolutionManagement` block, add the following entry inside its `repositories` block:
+
+```gradle
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+
+        maven {
+            url = uri("https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk")
+        }
+    }
+}
 ```
-react-native link react-native-kommunicate-chat
+
+For older Android projects that do not use `dependencyResolutionManagement`, add the repository to the root `android/build.gradle`:
+
+```gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        maven {
+            url "https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk"
+        }
+    }
+}
 ```
+
+React Native 0.60 and later supports automatic native-module linking, so no manual `react-native link` command is required.
 
 For iOS, navigate to YourApp/ios directory from terminal and run the below command:
     ```
     pod install
     ```
 
-Note: Kommunicate requires a minimum iOS platform version of 13, uses dynamic frameworks, and requires New Architecture to be disabled. Ensure the following settings are added at the top of your Podfile:
+Note: Kommunicate requires a minimum iOS platform version of 13 and uses dynamic frameworks. Ensure the following settings are added at the top of your Podfile:
  ```
  platform :ios, '13.0'
  use_frameworks!
