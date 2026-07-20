@@ -1,5 +1,6 @@
 # React Native Kommunicate Chat v2.6.3
 ## Android 
+- Added Android build compatibility with React Native 0.86 and React 19.2.3 using the New Architecture interoperability layer.
 - Added Android 15 compatibility.
 - Updated Kommunicate Android SDK to 2.16.4.
 - Updated Android compileSdkVersion and targetSdkVersion to 35.

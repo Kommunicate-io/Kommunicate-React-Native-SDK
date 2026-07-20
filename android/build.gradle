@@ -1,44 +1,36 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2' // Update this
-    }
-}
-
 apply plugin: 'com.android.library'
+
 rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
+
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
     }
 }
+
 android {
+    namespace "io.kommunicate.app"
     compileSdkVersion 35
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 1
-        versionName "1.0"
     }
-    lintOptions {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
         abortOnError false
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation 'com.facebook.react:react-native:+'
-    api 'io.kommunicate.sdk:kommunicateui:2.16.4'
+    implementation("com.facebook.react:react-android")
+    api("io.kommunicate.sdk:kommunicateui:2.16.4")
 }
