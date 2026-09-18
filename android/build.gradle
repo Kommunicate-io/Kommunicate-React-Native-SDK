@@ -51,5 +51,5 @@ repositories {
 
 dependencies {
     implementation("com.facebook.react:react-android")
-    api("io.kommunicate.sdk:kommunicateui:2.16.7")
+    api("io.kommunicate.sdk:kommunicateui:2.16.10")
 }
