@@ -1,3 +1,8 @@
+# React Native Kommunicate Chat v2.6.6
+## Android
+- Updated Kommunicate Android SDK to 2.16.10.
+- Bug fixes and improvements.
+
 # React Native Kommunicate Chat v2.6.5
 ## Android 
 - Added Android 16 compatibility.
