@@ -15,13 +15,15 @@ For iOS, navigate to YourApp/ios directory from terminal and run the below comma
 pod install
 ```
 
+The Kommunicate iOS SDK is now fetched through Swift Package Manager (SPM), because new versions are no longer published to CocoaPods. You don't need to change anything: `pod install` still works, and Xcode resolves the package automatically (internet access to GitHub is required). This needs React Native 0.75 or later; on older React Native versions the SDK falls back to the last CocoaPods release (7.3.6).
+
 Note: Kommunicate requires a minimum iOS platform version of 13 and uses dynamic frameworks. Ensure the following settings are added at the top of your Podfile:
  ```
  platform :ios, '13.0'
  use_frameworks!
  ```
 
-Add permissions for Camera, Photo Library, Microphone, Contacts and Location usage. </br>
+Add permissions for Camera, Photo Library, Microphone, Speech Recognition (required for speech-to-text / voice mode), Contacts and Location usage. </br>
 
 Note: We won't be asking the users for these permissions unless they use the respective feature. Due to Apple's requirement, we have to add these permissions if we are using any of their APIs related to Camera, Microphone etc.
 
@@ -35,11 +37,26 @@ Open `Info.plist` from `/ios/YOUR_PROJECT_NAME/Info.plist` file and paste these 
 <string>Allow location sharing!!</string>
 <key>NSMicrophoneUsageDescription</key>
 <string>Allow MicroPhone</string>
+<key>NSSpeechRecognitionUsageDescription</key>
+<string>Allow speech recognition for voice input</string>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>Allow Photos</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>Allow write access</string>
 ```
+## Android permissions
+
+The Kommunicate Android SDK does not declare the microphone permission itself, so add it to your app's `android/app/src/main/AndroidManifest.xml` to use voice mode, speech-to-text and audio messages. Add the others only for the features you use (camera, location sharing, attachments):
+
+```xml
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+
+Permissions such as `RECORD_AUDIO` are requested from the user at runtime, so make sure your app asks for them (for example with `PermissionsAndroid`) before the user starts a voice message.
+
 ## ProGuard rules
 
 Add these proguard rules in the proguard-rules.pro file. If you skip this step then your app might crash in the the release build if minify enable is set to true.
