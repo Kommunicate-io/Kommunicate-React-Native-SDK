@@ -1,3 +1,12 @@
+# React Native Kommunicate Chat v2.6.7
+## Android
+- Updated Kommunicate Android SDK to 2.17.0.
+- Bug fixes and improvements.
+
+## iOS
+- Updated Kommunicate iOS SDK to 7.3.8.
+- Kommunicate iOS SDK is now integrated via Swift Package Manager (using React Native's `spm_dependency`, RN 0.75+) as it is no longer published to CocoaPods. No app-side changes required; older RN versions fall back to CocoaPods 7.3.6.
+
 # React Native Kommunicate Chat v2.6.6
 ## Android
 - Updated Kommunicate Android SDK to 2.16.10.
